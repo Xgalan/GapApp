@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+{% block title %}Login{% endblock %}
+{% block generic %}
+<div class="container">
+<div class="row">
+    <div class="col-xs-12 col-md-offset-3 col-md-6">
+    <div class="row"><div class="col-xs-12"><img src="/static/images/logoclem_w.png" alt="logoclem" style="padding-bottom:15px"></div></div>
+    <div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Login</h2>
+        <form role="form" id="form-login" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            <input id="id_username" class="form-control" type="text" name="username" maxlength="254">
+            <p class="help-block">Inserisci il nome utente.</p>
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            <input id="id_password" class="form-control" type="password" name="password">
+            <p class="help-block">Inserisci la password.</p>
+        </div>
+        <div class="form-group">
+            <button type="submit" value="login" class="btn btn-success">Login</button>
+            <button type="reset" value="login" class="btn btn-default">Reset</button>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+        {% if form.errors %}
+            <p>Nome utente o password errati.</p>
+        {% endif %}
+    </div>
+    <div class="panel-footer"> Italclem S.p.A.</div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock generic %}

@@ -1,0 +1,23 @@
+{% extends "inspections/base_form.html" %}
+{% block title %}GAP - Crea nuovo lotto{% endblock %}
+{% block form %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Crea nuovo lotto</h3>
+    </div>
+    <div class="panel-body">
+        <form method="POST">{% csrf_token %}
+            {% for field in form %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                {{ field.label_tag }}
+                {{ field }}
+                <span class="help-block">
+                    {{ field.errors|escape }}
+                </span>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-default">Registra</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

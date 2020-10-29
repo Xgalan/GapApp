@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+{% block title %}GAP - Lista Codici{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+<h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
+<hr>
+{% if partnumbers_list %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <caption>Lista Codici</caption>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Codice</th>
+                <th>Descrizione</th>
+                <th>Unità stock</th>
+                <th>P.M.U. (g)</th>
+                <th>Data modifica</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in partnumbers_list %}
+            <tr>
+                <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
+                <td>{{ p.sku }}</td>
+                <td>{{ p.description }}</td>
+                <td>{{ p.get_unit_display }}</td>
+                <td>{% if p.pmu %}{{ p.pmu }}{% endif %}</td>
+                <td>{{ p.modified|date:"d/m/Y" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>Nessun codice presente.</p>
+{% endif %}
+    <div class="well well-sm">
+        Nr. totale codici: {{ partnumbers_list.count }}
+    </div>
+</div>
+{% endblock %}

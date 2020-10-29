@@ -1,0 +1,75 @@
+{% extends "index.html" %}
+{% block title %}GAP - Dettaglio {{ object }}{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+
+    <!-- Table -->
+    <table class="table table-bordered">
+        <caption>Dettaglio</caption>
+        <thead>
+            <tr>
+                <td class="cellreport"><h3><b>ITALCLEM S.r.l.</b></h3></td>
+                <td style="text-align: center;"><h4>
+                    Gestione passaggio componenti e <br>sottoassiemi in area prelievo
+                </h4></td>
+                <td style="text-align: center;"><h3><b>GAP</b></h3></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CODICE:<br>
+                    <span class="pull-right"><h4>{{ object.sku }}</h4></span>
+                </td>
+                <td colspan="2">DESCRIZIONE:<br>
+                    <span class="pull-right">
+                        {{ object.description }}
+                    </span><br><span class="pull-right">
+                        {{ object.category }}
+                    </span></td>
+            </tr>
+            <tr>
+                <td>Nr. DB contapezzi:<br>
+                    <span class="pull-right">{{ object.db_nr }}</span></td>
+                <td>Unità stock:<br>
+                    <span class="pull-right">
+                        {{ object.get_unit_display }}
+                    </span></td>
+                <td>P.M.U. (g):<br>
+                    <span class="pull-right">
+                        {{ object.pmu }}
+                    </span></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="4">Movimenti</th>
+            </tr>
+            <tr>
+                <th>#</th>
+                <th>Nr. Lotto</th>
+                <th>Data immissione in area prelievo</th>
+                <th>Operatore</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if pickings %}
+                {% for p in pickings %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ p.lot }}</td>
+                        <td>{{ p.picking_date }}</td>
+                        <td>{{ p.picking_operator.first_name }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">Nessun movimento presente.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block page_script %}{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% block title %}GAP - Gestione passaggio sottoassiemi e componenti in area prelievo{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+    <div class="jumbotron">
+        <h1>GAP</h1>
+        <p>Gestione passaggio sottoassiemi e componenti in area prelievo</p>
+        {% if user.is_authenticated %}
+        <p><a class="btn btn-primary btn-lg" href="{% url 'picking_recents' %}" role="button">Movimenti Recenti...</a></p>
+        {% if user.is_staff %}
+        <p><a class="btn btn-warning btn-lg" href="/admin/">Admin</a></p>
+        {% endif %}
+        {% else %}
+        <p><a class="btn btn-primary btn-lg" href="{% url 'login' %}">Login</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
