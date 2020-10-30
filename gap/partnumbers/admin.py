@@ -25,6 +25,8 @@ class CategoryResource(resources.ModelResource):
 
 class PartnumberAdmin(ImportExportModelAdmin):
     resource_class = PartnumberResource
+    list_display = ('sku', 'category',)
+    list_filter = ('category',)
 
 
 class CategoryAdmin(ImportExportModelAdmin):
