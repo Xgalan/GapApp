@@ -67,7 +67,10 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
                 'data': self.request.POST,
                 'files': self.request.FILES,
             })
+        id_ = self.kwargs.get("pk")
         kwargs['initial']['picking_operator'] = self.request.user
+        if id_:
+            kwargs['initial']['partnumber'] = id_
         return kwargs
 
 

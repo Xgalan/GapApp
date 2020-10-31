@@ -1,11 +1,8 @@
-{% extends "index.html" %}
+{% extends "partnumbers/base_form.html" %}
 {% block title %}GAP - Dettaglio {{ object }}{% endblock %}
-{% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
-
+{% block form %}
     <!-- Table -->
     <table class="table table-bordered">
-        <caption class="hidden-print">Dettaglio</caption>
         <thead>
             <tr>
                 <td class="cellreport"><h3><b>ITALCLEM S.r.l.</b></h3></td>
@@ -44,7 +41,10 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th colspan="4">Movimenti</th>
+                <th colspan="4">Trasferimenti da magazzino ad area prelievo
+                <a class="btn btn-default btn-sm hidden-print pull-right" href="{% url 'picking_create_pn' object.id %}">
+                    <span class="glyphicon glyphicon-plus"  aria-hidden="true"></span></a>
+                </th>
             </tr>
             <tr>
                 <th>#</th>
@@ -70,6 +70,5 @@
             {% endif %}
         </tbody>
     </table>
-</div>
 {% endblock %}
 {% block page_script %}{% endblock %}

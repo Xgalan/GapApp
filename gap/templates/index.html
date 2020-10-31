@@ -36,31 +36,29 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         {% if user.is_authenticated %}
                         <ul class="nav navbar-nav">
-                        
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestione <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                            {% if user.is_staff %}
-                            <li><a href="{% url 'partnumber_list' %}">Lista Codici </a></li>
-                            <li><a href="{% url 'partnumber_create' %}">Aggiungi codice...</a></li>
-                            <li><a href="{% url 'partnumber_print' %}">Lista per Stampa</a></li>
-                            <li role="separator" class="divider"></li>
-                            {% endif %}
-                            <li><a href="{% url 'picking_recents' %}">Movimenti Recenti</a></li>
-                            <li><a href="{% url 'picking_create' %}">Aggiungi Movimento...</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{% url 'lot_create' %}">Aggiungi lotto...</a></li>
-                            </ul>
-                        </li>
-                        
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestione <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                {% if user.is_staff %}
+                                <li><a href="{% url 'partnumber_list' %}">Lista Codici </a></li>
+                                <li><a href="{% url 'partnumber_create' %}">Aggiungi codice...</a></li>
+                                <li><a href="{% url 'partnumber_print' %}">Lista per Stampa</a></li>
+                                <li role="separator" class="divider"></li>
+                                {% endif %}
+                                <li><a href="{% url 'picking_recents' %}">Movimenti Recenti</a></li>
+                                <li><a href="{% url 'picking_create' %}">Aggiungi Movimento...</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'lot_create' %}">Aggiungi lotto...</a></li>
+                                </ul>
+                            </li>
                         </ul>
 
-                        <form id="frmSearch" class="navbar-form navbar-left" method="GET">
+                        <form id="frmSearch" class="navbar-form navbar-left" method="GET" role="search">
                             <div class="form-group">
-                                <select name="search" class="form-control" style="width: 100%"
-                                    data-ajax--url="{% url 'partnumber-list' %}"></select>
+                                    <select name="search" class="form-control" style="width: 100%;"
+                                        data-ajax--url="{% url 'partnumber-list' %}"></select>
                             </div>
-                            <button type="submit" class="btn btn-default btn-sm">
+                            <button type="submit" class="btn btn-default">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
                         </form>

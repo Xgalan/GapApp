@@ -1,15 +1,17 @@
 {% extends "index.html" %}
 {% block content %}
-<div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="hidden-print">
     <h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
     <hr>
     <p>
-        <a href="{% url 'partnumber_list' %}" class="btn btn-default btn-sm"> 
-            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-            Codici</a>
-        <button id="btnGetPickings" class="btn btn-info btn-sm">Movimenti</button>
-        <a href="{% url 'picking_create' %}" class="btn btn-default btn-sm">Aggiungi movimento...</a>
+        <div class="btn-group" role="group" aria-label="...">
+            <a href="{% url 'partnumber_list' %}" class="btn btn-default btn-sm"> 
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                Codici</a>
+        </div>
     </p>
+</div>
     {% block form %}
     {% endblock %}
 </div>

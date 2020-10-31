@@ -30,6 +30,9 @@
                 <button class="btn btn-warning btn-sm" data-toggle="collapse"
                 data-target="#frmUpdate" aria-expanded="false" 
                 aria-controls="frmUpdate">Modifica</button></li>
+            <li class="list-group-item">
+                <button id="btnGetPickings" class="btn btn-info btn-sm">Movimenti</button>
+            </li>
         </ul>
         <div class="panel-footer">Creato: {{ object.created|date }} | Modificato:
         {{ object.modified|date }}
@@ -50,7 +53,6 @@
             <tbody></tbody>
         </table>
     </div>
-    <hr>
     <div id="frmUpdate" class="panel panel-warning collapse">
         <div class="panel-heading">
             <h3 class="panel-title">Modifica</h3></div>
