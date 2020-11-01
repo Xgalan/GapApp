@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -51,7 +53,17 @@ class PrintDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['pickings'] = self.object.picking_set.order_by('-picking_date')
+        year = self.kwargs.get("year")
+        if year:
+            current_year = year
+        else:
+            current_year = datetime.now().year
+        past_year = current_year - 1
+        past_year_picking = list(self.object.picking_set.filter(
+            picking_date__year=past_year).order_by('-picking_date')[:1])
+        current_year_pickings = list(self.object.picking_set.filter(
+            picking_date__year=current_year).order_by('picking_date'))
+        context['pickings'] = past_year_picking + current_year_pickings
         return context
 
 

@@ -27,32 +27,20 @@
         </table>
         <ul class="list-group">
             <li class="list-group-item">
-                <button class="btn btn-warning btn-sm" data-toggle="collapse"
-                data-target="#frmUpdate" aria-expanded="false" 
-                aria-controls="frmUpdate">Modifica</button></li>
-            <li class="list-group-item">
-                <button id="btnGetPickings" class="btn btn-info btn-sm">Movimenti</button>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button class="btn btn-warning btn-sm" data-toggle="collapse"
+                        data-target="#frmUpdate" aria-expanded="false" 
+                        aria-controls="frmUpdate">Modifica</button>
+                    <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-default btn-sm">
+                        Aggiungi movimento...</a>
+                </div>
             </li>
         </ul>
         <div class="panel-footer">Creato: {{ object.created|date }} | Modificato:
         {{ object.modified|date }}
         </div>
     </div>
-    <div id="divInfo" class="panel panel-info hidden">
-        <!-- Default panel contents -->
-        <div class="panel-heading"><h3 class="panel-title">Movimenti</h3></div>
-        <!-- Table -->
-        <table id="tblPickings" class="table">
-            <thead>
-                <tr>
-                    <th>Nr. Lotto</th>
-                    <th>Data immissione in area prelievo</th>
-                    <th>Operatore</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+
     <div id="frmUpdate" class="panel panel-warning collapse">
         <div class="panel-heading">
             <h3 class="panel-title">Modifica</h3></div>
@@ -73,32 +61,4 @@
     </div>
 </div>
 {% endblock %}
-{% block page_script %}
-<script>
-    $(function() {
-
-        $('#btnGetPickings').click(function() {
-            $.ajax({
-                url: '{% url 'picking_filter_pn' object.id %}',
-            }).done(function( data ) {
-                var htmlStr = '';
-
-                if (arrayIsEmpty(data)) {
-                    htmlStr = '<tr><td>Nessun movimento presente.</td></tr>';
-                } else {
-                    data.forEach(function(el) {
-                        const pd = new Date(el.picking_date).toLocaleDateString();
-                        var lotDate = new Date(el.lot.lot_date).getFullYear();
-
-                        htmlStr += html`<tr><td>${el.lot.lot_number} / ${lotDate} ${el.lot.supplier_type_display}</td>
-                            <td>${pd}</td><td>${el.picking_operator.first_name}</td></tr>`
-                    });
-                }
-
-                $('#divInfo').removeClass('hidden');
-                $('#tblPickings > tbody').html(htmlStr);
-            });
-        });
-    });
-    </script>
-{% endblock %}
+{% block page_script %}{% endblock %}

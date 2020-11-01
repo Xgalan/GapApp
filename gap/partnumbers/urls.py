@@ -9,4 +9,5 @@ urlpatterns = [
     path('<uuid:pk>/', views.UpdateView.as_view(), name='partnumber_update'),
     path('print/', views.PrintListView.as_view(), name='partnumber_print'),
     path('print/<uuid:pk>/', views.PrintDetailView.as_view(), name='partnumber_detail'),
+    path('print/<uuid:pk>/<int:year>/', views.PrintDetailView.as_view(), name='partnumber_detail_year'),
 ]
