@@ -73,7 +73,6 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
     template_name_suffix = '_create_form'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Find the MAX db_nr
         q = Partnumber.objects.all().aggregate(Max('db_nr'))['db_nr__max']

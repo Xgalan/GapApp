@@ -46,11 +46,6 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
     form_class = PickingForm
     template_name_suffix = '_create_form'
 
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        print(self.request.user)
-        return super().form_valid(form)
-
     def form_invalid(self, form):
         print('invalid')
         print(form.errors)

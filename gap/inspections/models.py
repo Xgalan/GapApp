@@ -38,6 +38,17 @@ class Lot(TimeStampedModel):
         ordering = ['-lot_date', 'lot_number']
 
     def __str__(self):
-        s = "{self.lot_number} / {self.lot_date.year} ".format(self=self)
-        s += self.get_supplier_type_display()
-        return s
+        d = self.get_supplier_type_display()
+        lot_year = self.lot_date.strftime("%y")
+        lot_date = self.lot_date.strftime("%d/%m/%Y")
+        std = "{self.lot_number} / {lot_year}".format(self=self, lot_year=lot_year)
+        case = {
+            'fn': std + d,
+            'tz': std + d,
+            'sclpun': d + " {lot_date}".format(lot_date=lot_date),
+            'int_pr': d,
+            't': std + d,
+            'r': std + d,
+            'QPS': d + ' ' + std,
+        }
+        return case[self.supplier_type]
