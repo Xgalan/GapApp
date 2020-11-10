@@ -5,10 +5,17 @@
     <h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
     <hr>
     <p>
-        <div class="btn-group" role="group" aria-label="...">
-            <a href="{% url 'partnumber_list' %}" class="btn btn-default btn-sm"> 
+        <div class="btn-group btn-group-sm" role="group" aria-label="...">
+            <a href="{% url 'partnumber_list' %}" class="btn btn-default"> 
                 <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                 Codici</a>
+            {% if user.is_staff %}
+                {% if object %}
+                <a href="{% url 'partnumber_update' object.id %}" class="btn btn-warning">
+                    Modifica
+                </a>
+                {% endif %}
+            {% endif %}
         </div>
     </p>
 </div>

@@ -45,7 +45,7 @@ class Partnumber(TimeStampedModel):
         return "%s" % self.sku
 
     def __str__(self):
-        return "{self.sku} | {self.description}".format(self=self)
+        return "{self.sku} | {self.category}".format(self=self)
 
     def related_label(self):
         return "%s" % self.sku

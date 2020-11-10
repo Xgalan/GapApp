@@ -2,6 +2,7 @@
 
 # C extensions
 *.so
+*.sh
 
 # Packages
 *.egg
