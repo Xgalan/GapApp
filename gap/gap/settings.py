@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'partnumbers.apps.PartnumbersConfig',
     'pickings.apps.PickingsConfig',
     'inspections.apps.InspectionsConfig',
+    'orders.apps.OrdersConfig',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',

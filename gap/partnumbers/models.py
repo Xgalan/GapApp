@@ -12,9 +12,6 @@ class Category(TimeStampedModel):
     class Meta:
         verbose_name_plural = 'categories'
 
-    def __unicode__(self):
-        return "%s" % self.category_name
-
     def __str__(self):
         return "%s" % self.category_name
 
@@ -40,9 +37,6 @@ class Partnumber(TimeStampedModel):
     db_nr = models.IntegerField(null=True, blank=True)
     category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE)
-
-    def __unicode__(self):
-        return "%s" % self.sku
 
     def __str__(self):
         return "{self.sku} | {self.category}".format(self=self)
