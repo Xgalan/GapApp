@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="https://unpkg.com/js-datepicker/dist/datepicker.min.css">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha512-kq3FES+RuuGoBW3a9R2ELYKRywUEQv0wvPTItv3DSGqjpbNtGWVdvT8qwdKkqvPzT93jp8tSF4+oN4IeTEIlQA==" crossorigin="anonymous" />
-        <link rel="stylesheet" href="{% static 'css/normalize.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
     </head>
     <body>
@@ -43,6 +42,8 @@
                                 <li><a href="{% url 'partnumber_list' %}">Lista Codici </a></li>
                                 <li><a href="{% url 'partnumber_create' %}">Aggiungi codice...</a></li>
                                 <li><a href="{% url 'partnumber_print' %}">Lista per Stampa</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'order_list' %}">Lista Ordini</a></li>
                                 <li role="separator" class="divider"></li>
                                 {% endif %}
                                 <li><a href="{% url 'picking_recents' %}">Movimenti Recenti</a></li>

@@ -2,10 +2,8 @@
 {% block content %}
 <div class="col-xs-12 col-md-8 col-md-offset-2">
     <div class="hidden-print">
-    <h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
-    <hr>
     <p>
-        <div class="btn-group btn-group-sm" role="group" aria-label="...">
+        <div class="btn-group btn-group-sm" role="group">
             <a href="{% url 'partnumber_list' %}" class="btn btn-default"> 
                 <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                 Codici</a>
@@ -18,7 +16,7 @@
             {% endif %}
         </div>
     </p>
-</div>
+    </div>
     {% block form %}
     {% endblock %}
 </div>

@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block title %}GAP - Dettaglio COC {{ object.coc }}{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        <h3 class="panel-title">Dettaglio COC {{ object.coc }} - Cliente: {{ object.customer }}</h3>
+        </div>
+        <div class="panel-body">
+            Data ordine: {{ object.orderdate|date }}
+            <br>Data di consegna: {{ object.shipdate|date }}
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Codice</th>
+                    <th>Quantità</th>
+                    <th>Stato</th>
+                    <th>Data </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in items %}
+                <tr>
+                    <td>{{ i.partnumber.sku }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>{{ i.get_status_display }}</td>
+                    <td>{{ i.status_changed|date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>   
+</div>
+{% endblock %}

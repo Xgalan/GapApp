@@ -40,7 +40,8 @@ class PrintListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'partnumbers_list'
 
     def get_queryset(self):
-        return Partnumber.objects.order_by('sku')
+        return Partnumber.objects.select_related('category').exclude(
+            category__category_name='Prodotto Finito').order_by('sku')
 
 
 class PrintDetailView(LoginRequiredMixin, generic.DetailView):

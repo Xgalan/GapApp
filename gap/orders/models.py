@@ -3,7 +3,7 @@ from calendar import monthrange
 from operator import ge
 
 from django.db import models
-from django.db.models import Q, Sum, F
+from django.db.models import Q, Sum, F, Prefetch
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.urls import reverse
@@ -96,7 +96,7 @@ class Order(ValuesMixin, TimeStampedModel):
         return "COC: {self.coc} | {self.orderdate}".format(self=self)
 
     def get_absolute_url(self):
-        return reverse('order-detail', args=[str(self.id)])
+        return reverse('order-detail', kwargs={'pk': self.pk})
 
     objects = models.Manager()
     requested = RequestedManager()

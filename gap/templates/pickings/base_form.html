@@ -14,12 +14,16 @@
 {% endblock %}
 {% block page_script %}
 <script>
+$(function() {
+
     const picker = datepicker('#id_picking_date', {
         formatter: (input, date, instance) => {
             const value = date.toLocaleDateString()
             input.value = value  // => '2099-01-01'
         },
         noWeekends: true
-    });
+        });
+
+});
 </script>
 {% endblock %}

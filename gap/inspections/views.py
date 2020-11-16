@@ -14,8 +14,6 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
     success_url = reverse_lazy('picking_recents')
 
     def form_valid(self, form):
-        print(form.cleaned_data)
-        print(self.request.user)
         return super().form_valid(form)
 
     def form_invalid(self, form):
