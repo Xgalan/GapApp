@@ -129,6 +129,11 @@ class OrderitemsFilter(models.Manager):
 
     def shipdate_in_isoweek(self, isoweek):
         return self.filter(coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id'))
+    
+    def shipdate_in_isoweek_open(self, isoweek):
+        return self.select_related('partnumber', 'coc').filter(
+            Q(status='planned') | Q(status='released'),
+            coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id'))
 
     def shipdate_in_month_range(self, start_month, end_month):
         return self.filter(coc__in=Order.requested.shipdate_in_month_range(
