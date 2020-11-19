@@ -96,28 +96,4 @@ $(function() {
         $( this ).attr('action', urlSearch);
         $( this )[0].submit();
     });
-    
-    /*
-    $('#btnGetPickings').click(function() {
-        $.ajax({
-            url: '{% url 'picking_filter_pn' object.id %}',
-        }).done(function( data ) {
-            var htmlStr = '';
-
-            if (arrayIsEmpty(data)) {
-                htmlStr = '<tr><td>Nessun movimento presente.</td></tr>';
-            } else {
-                data.forEach(function(el) {
-                    const pd = new Date(el.picking_date).toLocaleDateString();
-                    var lotDate = new Date(el.lot.lot_date).getFullYear();
-
-                    htmlStr += html`<tr><td>${el.lot.lot_number} / ${lotDate} ${el.lot.supplier_type_display}</td>
-                        <td>${pd}</td><td>${el.picking_operator.first_name}</td></tr>`
-                });
-            }
-
-            $('#tblPickings > tbody').html(htmlStr);
-        });
-    });
-    */
 });

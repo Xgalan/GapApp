@@ -140,14 +140,46 @@ class OrderitemsFilter(models.Manager):
             start_month, end_month).values('id'))
 
 
-class Orderitem(TimeStampedModel):
+class OrderitemsGroupBy(models.Manager):
     """
-    This model represent the product requested by the customer in a related order.
-
     TODO:
     def partnumber_sum_quantity(self):
         return self.filter(status='closed').prefetch_related('partnumber').values(
             'partnumber', 'partnumber__sku').annotate(total=Sum('quantity'))
+    """
+    def isoweek_open(self):
+
+        """ Group items in order by isoweek """
+
+        dates = self.select_related('coc').filter(
+            Q(status='planned') | Q(status='released')
+        ).dates('coc__shipdate', 'week', order='DESC')
+        weeks = [d.isocalendar()[:2] for d in dates]
+        """
+        [{"{w[1]} - {w[0]}".format(w=w): self.select_related('partnumber', 'coc').filter(
+            Q(status='planned') | Q(status='released'),
+            coc__in=Order.requested.shipdate_in_isoweek(w[1]).values('id')).values(
+            'partnumber__sku', 
+            'coc', 
+            'coc__coc',
+            'coc__customer__name',
+            'quantity',
+            'status'
+        )} for w in weeks]
+        """
+        return [{"{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_open(w[1]).values(
+            'partnumber__sku', 
+            'coc', 
+            'coc__coc',
+            'coc__customer__name',
+            'quantity',
+            'status'
+        )} for w in weeks]
+
+
+class Orderitem(TimeStampedModel):
+    """
+    This model represent the product requested by the customer in a related order.
     """
     class OrderitemStatus(models.TextChoices):
         PLANNED = 'planned', _('In programma')
@@ -196,6 +228,7 @@ class Orderitem(TimeStampedModel):
 
     objects = models.Manager()
     filterby = OrderitemsFilter()
+    groupby = OrderitemsGroupBy()
 
     class Meta:
         verbose_name = "finished good"

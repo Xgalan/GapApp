@@ -19,24 +19,7 @@ class OrderListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
-        dates = Orderitem.objects.select_related('coc').filter(
-            Q(status='planned') | Q(status='released')
-        ).dates(
-            'coc__shipdate', 'week', order='DESC'
-        )
-        weeks = [d.isocalendar()[1] for d in dates]
-        objects = [{w: Orderitem.filterby.shipdate_in_isoweek_open(w).values(
-            'id', 
-            'partnumber', 
-            'partnumber__sku', 
-            'coc', 
-            'coc__coc', 
-            'coc__shipdate',
-            'coc__customer',
-            'quantity',
-            'status',
-            'status_changed'
-        )} for w in weeks]
+        objects = Orderitem.groupby.isoweek_open()
         return Response(objects)
 
 
