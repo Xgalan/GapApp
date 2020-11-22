@@ -25,9 +25,17 @@ class Lot(TimeStampedModel):
         (RELAY, 'R'),
         (MOLDING, 'QPS')
     ]
-    lot_number = models.IntegerField()
-    lot_date = models.DateField(default=date.today)
-    supplier_type = models.CharField(choices=TYPES_, max_length=6, default=SUPPLIER)
+    lot_number = models.IntegerField(
+        verbose_name='nr. lotto'
+    )
+    lot_date = models.DateField(
+        default=date.today,
+        verbose_name='data di consegna'
+    )
+    supplier_type = models.CharField(
+        choices=TYPES_, max_length=6, default=SUPPLIER,
+        verbose_name='tipo di fornitura'
+    )
     partnumbers = models.ManyToManyField(Partnumber, through='pickings.Picking')
 
     class Meta:
@@ -36,6 +44,7 @@ class Lot(TimeStampedModel):
             name='unique_lot')
         ]
         ordering = ['-lot_date', 'lot_number']
+        verbose_name='lotto'
 
     def __str__(self):
         d = self.get_supplier_type_display()

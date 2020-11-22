@@ -2,6 +2,7 @@ from django.urls import reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from rest_framework.generics import ListAPIView
 from rest_framework import permissions
@@ -38,7 +39,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
             return Picking.objects.order_by('-modified')[:20]
         else:
             return Picking.objects.filter(
-                picking_operator=self.request.user).order_by('-modified')[:10]
+                picking_operator=self.request.user).order_by('-modified')[:20]
 
 
 class CreateView(LoginRequiredMixin, generic.edit.CreateView):
@@ -47,8 +48,8 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
     template_name_suffix = '_create_form'
 
     def form_invalid(self, form):
-        print('invalid')
-        print(form.errors)
+        errors = form.errors.as_data()['__all__'][0]
+        messages.error(self.request, errors, extra_tags='danger')
         return super().form_invalid(form)
 
     def get_form_kwargs(self):
@@ -62,10 +63,13 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
                 'data': self.request.POST,
                 'files': self.request.FILES,
             })
-        id_ = self.kwargs.get("pk")
+        pn_id = self.kwargs.get('pn_id')
+        lot_id = self.kwargs.get('lot_id')
         kwargs['initial']['picking_operator'] = self.request.user
-        if id_:
-            kwargs['initial']['partnumber'] = id_
+        if pn_id:
+            kwargs['initial']['partnumber'] = pn_id
+        if lot_id:
+            kwargs['initial']['lot'] = lot_id
         return kwargs
 
 

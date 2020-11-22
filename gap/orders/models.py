@@ -131,9 +131,10 @@ class OrderitemsFilter(models.Manager):
         return self.filter(coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id'))
     
     def shipdate_in_isoweek_open(self, isoweek):
-        return self.select_related('partnumber', 'coc').filter(
+        return self.select_related('coc').filter(
             Q(status='planned') | Q(status='released'),
-            coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id'))
+            coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id')
+        )
 
     def shipdate_in_month_range(self, start_month, end_month):
         return self.filter(coc__in=Order.requested.shipdate_in_month_range(
@@ -141,12 +142,21 @@ class OrderitemsFilter(models.Manager):
 
 
 class OrderitemsGroupBy(models.Manager):
-    """
-    TODO:
-    def partnumber_sum_quantity(self):
-        return self.filter(status='closed').prefetch_related('partnumber').values(
-            'partnumber', 'partnumber__sku').annotate(total=Sum('quantity'))
-    """
+
+    """ Various aggregates """
+
+    def total_status_open(self):
+        total = Sum('quantity', filter=Q(status='planned') | Q(status='released'))
+        return self.select_related(
+            'partnumber'
+        ).values(
+            'partnumber__sku'
+        ).order_by(
+            'partnumber'
+        ).annotate(
+            total=total
+        )
+
     def isoweek_open(self):
 
         """ Group items in order by isoweek """
@@ -155,26 +165,19 @@ class OrderitemsGroupBy(models.Manager):
             Q(status='planned') | Q(status='released')
         ).dates('coc__shipdate', 'week', order='DESC')
         weeks = [d.isocalendar()[:2] for d in dates]
-        """
-        [{"{w[1]} - {w[0]}".format(w=w): self.select_related('partnumber', 'coc').filter(
-            Q(status='planned') | Q(status='released'),
-            coc__in=Order.requested.shipdate_in_isoweek(w[1]).values('id')).values(
-            'partnumber__sku', 
-            'coc', 
-            'coc__coc',
-            'coc__customer__name',
-            'quantity',
-            'status'
-        )} for w in weeks]
-        """
-        return [{"{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_open(w[1]).values(
-            'partnumber__sku', 
-            'coc', 
-            'coc__coc',
-            'coc__customer__name',
-            'quantity',
-            'status'
-        )} for w in weeks]
+        return [
+            {
+                "{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_open(
+                    w[1] # ISO week
+                ).values(
+                    'partnumber__sku',
+                ).order_by(
+                    'partnumber__sku'
+                ).annotate(
+                    total=Sum('quantity')
+                )
+            } for w in weeks
+        ]
 
 
 class Orderitem(TimeStampedModel):

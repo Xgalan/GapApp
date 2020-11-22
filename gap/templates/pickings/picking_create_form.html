@@ -1,6 +1,16 @@
-{% extends "pickings/base_form.html" %}
+{% extends "base_form.html" %}
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
 {% block form %}
+<p>
+    <a href="{% url 'picking_recents' %}" class="btn btn-default btn-sm"> 
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+        Movimenti</a>
+    {% if view.kwargs.pn_id %}
+    <a href="{% url 'lot_create_pn' view.kwargs.pn_id %}" class="btn btn-default btn-sm">
+        Aggiungi lotto...
+    </a>
+    {% endif %}
+</p>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Inserisci nuovo movimento</h3>
@@ -20,4 +30,17 @@
         </form>
     </div>
 </div>
+{% endblock %}
+{% block page_script %}
+<script>
+$(function() {
+    const picker = datepicker('#id_picking_date', {
+        formatter: (input, date, instance) => {
+            const value = date.toLocaleDateString()
+            input.value = value  // => '2099-01-01'
+        },
+        noWeekends: true
+        });
+});
+</script>
 {% endblock %}

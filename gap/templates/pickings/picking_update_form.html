@@ -1,6 +1,11 @@
-{% extends "pickings/base_form.html" %}
+{% extends "base_form.html" %}
 {% block title %}GAP - Modifica Movimento {% endblock %}
 {% block form %}
+    <p>
+        <a href="{% url 'picking_recents' %}" class="btn btn-default btn-sm"> 
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            Movimenti</a>
+    </p>
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><h3 class="panel-title">Dettaglio</h3>
@@ -47,4 +52,17 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block page_script %}
+<script>
+$(function() {
+    const picker = datepicker('#id_picking_date', {
+        formatter: (input, date, instance) => {
+            const value = date.toLocaleDateString()
+            input.value = value  // => '2099-01-01'
+        },
+        noWeekends: true
+        });
+});
+</script>
 {% endblock %}

@@ -6,6 +6,8 @@ from inspections.models import Lot
 
 
 class LotForm(ModelForm):
+    error_css_class = 'danger'
+
     class Meta:
         model = Lot
         fields = ('lot_number', 'lot_date', 'supplier_type',)

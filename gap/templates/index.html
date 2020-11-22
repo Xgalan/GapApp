@@ -33,27 +33,7 @@
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        {% if user.is_authenticated %}
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestione <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                {% if user.is_staff %}
-                                <li><a href="{% url 'partnumber_list' %}">Lista Codici </a></li>
-                                <li><a href="{% url 'partnumber_create' %}">Aggiungi codice...</a></li>
-                                <li><a href="{% url 'partnumber_print' %}">Lista per Stampa</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{% url 'order_list' %}">Lista Ordini</a></li>
-                                <li role="separator" class="divider"></li>
-                                {% endif %}
-                                <li><a href="{% url 'picking_recents' %}">Movimenti Recenti</a></li>
-                                <li><a href="{% url 'picking_create' %}">Aggiungi Movimento...</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{% url 'lot_create' %}">Aggiungi lotto...</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-
+                        {% if user.is_authenticated %}                        
                         <form id="frmSearch" class="navbar-form navbar-left" method="GET" role="search">
                             <div class="form-group">
                                     <select name="search" class="form-control" style="width: 100%;"
@@ -75,7 +55,37 @@
                                 <li><a href="{% url 'logout' %}">Logout</a></li>
                                 </ul>
                             </li>
-                        
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <p class="navbar-text">Gestione:</p>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lotti<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                <li><a href="{% url 'picking_recents' %}">Movimenti Recenti</a></li>
+                                <li><a href="{% url 'lot_list' %}">Lotti Recenti</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'picking_create' %}">Aggiungi Movimento...</a></li>
+                                <li><a href="{% url 'lot_create' %}">Aggiungi Lotto...</a></li>
+                                </ul>
+                            </li>
+                            {% if user.is_staff %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Codici<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                <li><a href="{% url 'partnumber_list' %}">Lista Codici </a></li>
+                                <li><a href="{% url 'partnumber_print' %}">Lista per Stampa</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'partnumber_create' %}">Aggiungi Codice...</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ordini<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                <li><a href="{% url 'order_list' %}">Prodotto Finito Richiesto</a></li>
+                                <li role="separator" class="divider"></li>
+                                </ul>
+                            </li>
+                            {% endif %}
                         </ul>
                         {% endif %}
                     </div><!-- /.navbar-collapse -->

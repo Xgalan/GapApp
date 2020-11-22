@@ -17,7 +17,7 @@ class LotAdmin(ImportExportModelAdmin):
     resource_class = LotResource
     fields = (('lot_number', 'supplier_type'), 'lot_date',)
     list_filter = ('supplier_type', 'lot_date', 'partnumbers',)
-    list_display = ('lot_number', 'supplier_type', 'lot_date',)
+    list_display = ('id', 'lot_number', 'supplier_type', 'lot_date',)
     raw_id_fields = ('partnumbers',)
     related_lookup_fields = {
         'm2m': ['partnumbers'],

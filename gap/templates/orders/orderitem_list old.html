@@ -1,8 +1,8 @@
 {% extends "index.html" %}
-{% block title %}GAP - Prodotto Finito Richiesto{% endblock %}
+{% block title %}GAP - Lista Ordini Cliente{% endblock %}
 {% block content %}
 <div class="col-xs-12 col-md-10 col-md-offset-1">
-    <h3>Totale Prodotto Finito Richiesto <small>Suddiviso per settimana</small></h3>
+    <h3>Lista Ordini Cliente <small>Suddivisa per settimana</small></h3>
     <hr>
     <div id="orderitem-list"></div>
 </div>
@@ -10,6 +10,12 @@
 {% block page_script %}
 <script>
 $(function() {
+    const status_display = {
+        'planned': 'In Programma',
+        'released': 'In Produzione',
+        'closed': 'Evaso',
+        'deleted': 'Annullato'
+    };
 
     $.ajax({
         url: '{% url 'api_order_list' %}',
@@ -28,17 +34,26 @@ $(function() {
                     htmlStr += html`
                         <div class="panel panel-default">
                         <div class="panel-heading">${key}</div>
-                        <div class="panel-body"><p>Prodotto finito richiesto nella S${key}</p></div>
+                        <div class="panel-body"><p>COC con data di consegna nella S${key}</p></div>
                         <table class="table"><thead><tr>
+                            <th>COC</th>
+                            <th>Cliente</th>
                             <th>Codice</th>
-                            <th>Quantità totale</th>
+                            <th>Quantità</th>
+                            <th>Stato Produzione</th>
                         </tr></thead><tbody>`
                 
                     weeks[key].forEach(function(el) {
+                        const statusChanged = new Date(el.status_changed).toLocaleDateString();
+                        const getStatusDisplay = status_display[el.status];
+
                         htmlStr += html`
                         <tr>
+                            <td>${el.coc__coc}</td>
+                            <td>${el.coc__customer__name}</td>
                             <td>${el.partnumber__sku}</td>
-                            <td>${el.total}</td>
+                            <td>${el.quantity}</td>
+                            <td>${getStatusDisplay}</td>
                         </tr>
                         `
                     });

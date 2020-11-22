@@ -1,0 +1,106 @@
+{% extends "index.html" %}
+{% block title %}GAP - Lista ultimi 20 lotti{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+<h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
+<hr>
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>{{ message }}</strong>
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-xs-12 col-md-4">
+        <p>
+            <a class="btn btn-default hidden-print" href="{% url 'lot_create' %}" role="button">
+                Aggiungi
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+        </p>
+    </div>
+    <div class="col-xs-12 col-md-8">
+
+        <form class="form-inline" id="frmLotSearch" method="GET" role="search">
+            <div class="form-group">
+                <select name="lotSearch" class="form-control" style="width: 100%;"
+                    data-ajax--url="{% url 'api_lot_list' %}"></select>
+            </div>
+            <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if lot_list %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <caption>Lotti recenti</caption>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nr. Lotto</th>
+                <th>Data consegna</th>
+                <th>Data modifica</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for lot in lot_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'lot_detail' lot.id %}">{{ lot }}</a></td>
+                <td>{{ lot.lot_date|date }}</td>
+                <td>{{ lot.modified|date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>Nessun lotto presente.</p>
+{% endif %}
+</div>
+{% endblock %}
+{% block page_script %}
+<script>
+    $(function() {
+        var selectLotSearch = $( "select[name='lotSearch']" );
+
+        selectLotSearch.select2({
+            placeholder: 'Cerca lotto...',
+            theme: "bootstrap",
+            minimumInputLength: 1,
+            ajax: {
+                dataType: 'json',
+                data: function (params) {
+                    var query = {
+                    search: params.term
+                    }
+                    return query;
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(obj) {
+                            return {
+                                id: obj.id,
+                                text: obj.lot_display
+                            };
+                        })
+                    };
+                }
+            }
+        });
+
+        $( "#frmLotSearch" ).submit(function( event ) {
+            event.preventDefault();
+
+            const searchVal = $( this ).serializeArray()[0];
+            const urlSearch = `/inspections/${searchVal.value}`;
+            $( this ).attr('action', urlSearch);
+            $( this )[0].submit();
+        });
+    });
+</script>
+{% endblock %}
