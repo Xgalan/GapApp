@@ -1,22 +1,28 @@
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 from orders.models import Order, Orderitem
 
 
 
-class OrderIndexView(LoginRequiredMixin, TemplateView):
+class OrderListView(LoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = 'orders'
+    paginate_by = 16
+
+
+class OrderitemByWeekView(LoginRequiredMixin, TemplateView):
     template_name = 'orders/orderitem_list.html'
 
 
-class OrderListView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class OrderListAPIView(APIView):
+    permission_classes = [IsAuthenticated,]
 
     def get(self, request, format=None):
         objects = Orderitem.groupby.isoweek_open()

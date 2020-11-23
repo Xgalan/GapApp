@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 from rest_framework.generics import ListAPIView
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 from pickings.models import Picking
 from pickings.serializers import PickingSerializer
@@ -18,7 +18,7 @@ class PickingListView(ListAPIView):
     API endpoint that retrieves all the pickings with a specified partnumber.
     """
     serializer_class = PickingSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         """

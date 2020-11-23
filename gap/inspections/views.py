@@ -26,6 +26,25 @@ class ListAPIView(ListAPIView):
     search_fields = ['lot_number']
 
 
+class UpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.UpdateView):
+    model = Lot
+    form_class = LotForm
+    template_name_suffix = '_update_form'
+    success_message = "Lotto %(lot)s aggiornato"
+    success_url = reverse_lazy('lot_list')
+
+    def form_invalid(self, form):
+        errors = form.errors.as_data()['__all__'][0]
+        messages.error(self.request, errors, extra_tags='danger')
+        return super().form_invalid(form)
+    
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            lot=str(self.object),
+        )
+
+
 class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateView):
     model = Lot
     form_class = LotForm
@@ -47,7 +66,7 @@ class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateVie
         pn_id = self.kwargs.get('pn_id')
         if pn_id:
             url_kwargs = {'pn_id': pn_id, 'lot_id': self.object.id}
-            return reverse_lazy('picking_create_lot', kwargs=url_kwargs)
+            return reverse_lazy('picking_create_pn_lot', kwargs=url_kwargs)
         else:
             return reverse_lazy('lot_list')
 

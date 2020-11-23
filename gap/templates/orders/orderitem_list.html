@@ -12,7 +12,7 @@
 $(function() {
 
     $.ajax({
-        url: '{% url 'api_order_list' %}',
+        url: "{% url 'api_order_list' %}",
     }).done(function( data ) {
         var htmlStr = '';
 

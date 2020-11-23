@@ -5,6 +5,12 @@
     <a href="{% url 'lot_list' %}" class="btn btn-default btn-sm"> 
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
         Lotti</a>
+    <a href="{% url 'lot_update' object.id %}" class="btn btn-warning btn-sm">
+        Modifica
+    </a>
+    <a href="{% url 'picking_create_lot' object.id %}" class="btn btn-default btn-sm">
+        Aggiungi movimento...
+    </a>
 </p>
 <div class="panel panel-default">
     <div class="panel-heading">
