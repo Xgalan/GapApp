@@ -96,7 +96,7 @@ class Order(ValuesMixin, TimeStampedModel):
         return "COC: {self.coc} | {self.orderdate}".format(self=self)
 
     def get_absolute_url(self):
-        return reverse('order-detail', kwargs={'pk': self.pk})
+        return reverse('order_detail', kwargs={'pk': self.pk})
 
     objects = models.Manager()
     requested = RequestedManager()
@@ -170,6 +170,7 @@ class OrderitemsGroupBy(models.Manager):
                 "{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_open(
                     w[1] # ISO week
                 ).values(
+                    'partnumber',
                     'partnumber__sku',
                 ).order_by(
                     'partnumber__sku'

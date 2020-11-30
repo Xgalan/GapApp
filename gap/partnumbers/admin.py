@@ -31,6 +31,7 @@ class PartnumberAdmin(ImportExportModelAdmin):
 
 class CategoryAdmin(ImportExportModelAdmin):
     resource_class = CategoryResource
+    list_display = ('id', 'category_name',)
 
 
 

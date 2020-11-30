@@ -3,7 +3,7 @@
 {% block form %}
     <div class="panel panel-default">
         <!-- Default panel contents -->
-        <div class="panel-heading"><h3 class="panel-title">Dettaglio</h3></div>
+        <div class="panel-heading"><h3 class="panel-title">Dettaglio {{ object.sku }}</h3></div>
         <!-- Table -->
         <table class="table">
             <thead>
@@ -33,10 +33,12 @@
                         aria-controls="frmUpdate">Modifica</button>
                     <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-default btn-sm">
                         Aggiungi movimento...</a>
+                    <button id="getOrders" class="btn btn-default btn-sm">
+                        Ordini Cliente</button>
                 </div>
             </li>
         </ul>
-        <div class="panel-footer">Creato: {{ object.created|date }} | Modificato:
+        <div class="panel-footer">{{ object.category }} | Modificato:
         {{ object.modified|date }}
         </div>
     </div>
@@ -59,6 +61,53 @@
             </form>
         </div>
     </div>
+
+    <table id="tableOrders" class="table hidden">
+        <thead>
+            <tr>
+                <th>COC nr.</th>
+                <th>Stato di produzione</th>
+                <th>Quantità</th>
+                <th>Data di consegna</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyOrders"></tbody>
+    </table>
+
+    
 </div>
 {% endblock %}
-{% block page_script %}{% endblock %}
+{% block page_script %}
+<script>
+$(function() {
+    var getOrders = $( "#getOrders" );
+    var htmlStr = '';
+    const notFoundMsg = 'Nessun ordine trovato.'
+
+    getOrders.click(function( event ) {
+        event.preventDefault();
+
+        $.getJSON("{% url 'orderitem_by_pn' object.id %}").done(function( data ) {
+            if (arrayIsEmpty(data)) {
+                alert(notFoundMsg);
+            } else {
+                data.forEach(function(el) {
+                    const shipdate = new Date(el.shipdate).toLocaleDateString();
+
+                    htmlStr += html`
+                        <tr>
+                            <td><a href="/orders/${el.coc}">${el.coc_display}</a></td>
+                            <td>${el.status_display}</td>
+                            <td>${el.quantity}</td>
+                            <td>${shipdate}</td>
+                        </tr>`
+                });
+
+                $("#tbodyOrders").append(htmlStr);
+                $("#tableOrders").removeClass("hidden");
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

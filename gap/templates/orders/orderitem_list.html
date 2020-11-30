@@ -37,7 +37,8 @@ $(function() {
                     weeks[key].forEach(function(el) {
                         htmlStr += html`
                         <tr>
-                            <td>${el.partnumber__sku}</td>
+                            <td><a href="/partnumbers/${el.partnumber}">
+                            ${el.partnumber__sku}</td>
                             <td>${el.total}</td>
                         </tr>
                         `

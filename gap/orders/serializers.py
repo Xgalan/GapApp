@@ -31,8 +31,19 @@ class CocSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    coc_display = serializers.ReadOnlyField(source='coc.coc')
+    shipdate = serializers.ReadOnlyField(source='coc.shipdate')
     status_display = serializers.ReadOnlyField(source='get_status_display')
 
     class Meta:
         model = Orderitem
-        fields = ('partnumber', 'status', 'status_display', 'status_changed', 'quantity')
+        fields = (
+            'coc',
+            'coc_display',
+            'partnumber',
+            'shipdate',
+            'status',
+            'status_display',
+            'status_changed',
+            'quantity'
+            )

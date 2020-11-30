@@ -4,10 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from orders.models import Order, Orderitem
+from orders.serializers import ItemSerializer
 
 
 
@@ -19,6 +21,20 @@ class OrderListView(LoginRequiredMixin, ListView):
 
 class OrderitemByWeekView(LoginRequiredMixin, TemplateView):
     template_name = 'orders/orderitem_list.html'
+
+
+class OrderitemByPartnumber(ListAPIView):
+    permission_classes = [IsAuthenticated,]
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        id_ = self.kwargs.get("pk")
+        return Orderitem.objects.select_related(
+                'coc', 'partnumber'
+            ).filter(
+                Q(status='planned') | Q(status='released'),
+                partnumber=id_
+            )
 
 
 class OrderListAPIView(APIView):
