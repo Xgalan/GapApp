@@ -65,6 +65,7 @@ class PrintDetailView(LoginRequiredMixin, generic.DetailView):
         current_year_pickings = list(self.object.picking_set.filter(
             picking_date__year=current_year).order_by('picking_date'))
         context['pickings'] = past_year_picking + current_year_pickings
+        context['dates'] = [d.year for d in self.object.picking_set.dates('picking_date', 'year')]
         return context
 
 

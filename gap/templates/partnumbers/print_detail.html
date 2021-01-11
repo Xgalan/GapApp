@@ -1,6 +1,14 @@
 {% extends "partnumbers/base_form.html" %}
 {% block title %}GAP - Dettaglio {{ object }}{% endblock %}
 {% block form %}
+    <p>
+        <div class="btn-group" role="group">
+            {% for y in dates %}
+                <a href="/partnumbers/print/{{object.id}}/{{ y }}" role="button" class="btn btn-default">
+                    {{ y }}</a>
+            {% endfor %}
+        </div>
+    </p>
     <!-- Table -->
     <table class="table table-bordered">
         <thead>
