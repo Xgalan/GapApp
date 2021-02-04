@@ -72,6 +72,7 @@ class Company(ValuesMixin, TimeStampedModel):
         return reverse('company-detail', args=[str(self.id)])
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'company'
         verbose_name_plural = 'companies'
 

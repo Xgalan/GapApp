@@ -10,6 +10,7 @@ class Category(TimeStampedModel):
     category_name = models.CharField(max_length=60, unique=True)
 
     class Meta:
+        ordering = ('category_name',)
         verbose_name_plural = 'categories'
 
     def __str__(self):
@@ -54,3 +55,6 @@ class Partnumber(TimeStampedModel):
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "sku__icontains",)
+
+    class Meta:
+        ordering = ('sku',)
