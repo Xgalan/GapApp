@@ -66,6 +66,7 @@
         <thead>
             <tr>
                 <th>COC nr.</th>
+                <th>Cliente</th>
                 <th>Stato di produzione</th>
                 <th>Quantità</th>
                 <th>Data di consegna</th>
@@ -97,6 +98,7 @@ $(function() {
                     htmlStr += html`
                         <tr>
                             <td><a href="/orders/${el.coc}">${el.coc_display}</a></td>
+                            <td>${el.customer}</td>
                             <td>${el.status_display}</td>
                             <td>${el.quantity}</td>
                             <td>${shipdate}</td>
