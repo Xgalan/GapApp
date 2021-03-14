@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'pickings.apps.PickingsConfig',
     'inspections.apps.InspectionsConfig',
     'orders.apps.OrdersConfig',
-    'grappelli',
+    'warehouse.apps.WarehouseConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'import_export',
+    'treebeard',
 ]
 
 MIDDLEWARE = [
@@ -138,8 +139,5 @@ STATICFILES_DIRS = (
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        #'rest_framework.renderers.TemplateHTMLRenderer',
     )
 }
-
-GRAPPELLI_ADMIN_TITLE = 'GAP - Gestione passaggio sottoassiemi e componenti in area prelievo'

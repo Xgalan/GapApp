@@ -2,7 +2,7 @@
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
 {% block form %}
 <p>
-    <a href="{% url 'picking_recents' %}" class="btn btn-default btn-sm"> 
+    <a href="{% url 'picking-list' %}" class="btn btn-default btn-sm"> 
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
         Movimenti</a>
     {% if view.kwargs.pn_id %}
@@ -34,13 +34,11 @@
 {% block page_script %}
 <script>
 $(function() {
-    const picker = datepicker('#id_picking_date', {
-        formatter: (input, date, instance) => {
-            const value = date.toLocaleDateString()
-            input.value = value  // => '2099-01-01'
-        },
-        noWeekends: true
-        });
+    $("#id_picking_date").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+    });
 });
 </script>
 {% endblock %}

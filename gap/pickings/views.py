@@ -5,8 +5,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from core.views import StandardResultsSetPagination
 from pickings.models import Picking
 from pickings.serializers import PickingSerializer
 from pickings.forms import PickingForm
@@ -29,17 +35,25 @@ class PickingListView(ListAPIView):
         return Picking.objects.filter(partnumber__id=id_)
 
 
-class IndexView(LoginRequiredMixin, generic.ListView):
+class PickingViewSet(ModelViewSet):
+    """  
+    CRUD API endpoint for pickings 
+    """
+    queryset = Picking.objects.all()
+    serializer_class = PickingSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
     template_name = 'pickings/list.html'
-    context_object_name = 'pickings_list'
+    filter_backends = [SearchFilter]
+    search_fields = ['partnumber__sku']
 
     def get_queryset(self):
-        """Return the last ten pickings."""
         if self.request.user.is_staff:
-            return Picking.objects.order_by('-modified')[:20]
+            return Picking.objects.order_by('-modified')
         else:
             return Picking.objects.filter(
-                picking_operator=self.request.user).order_by('-modified')[:20]
+                picking_operator=self.request.user).order_by('-modified')
 
 
 class CreateView(LoginRequiredMixin, generic.edit.CreateView):
@@ -74,6 +88,7 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 
 class UpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+    #TODO: migliorare inserimento dati, ovvero ricerca ajax (htmx?) nel form per campi codice e lotto
     model = Picking
     form_class = PickingForm
     template_name_suffix = '_update_form'

@@ -44,7 +44,7 @@ class Lot(TimeStampedModel):
             name='unique_lot')
         ]
         ordering = ['-lot_date', 'lot_number']
-        verbose_name='lotto'
+        verbose_name = 'lotto'
 
     def __str__(self):
         d = self.get_supplier_type_display()

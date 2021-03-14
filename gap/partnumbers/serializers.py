@@ -12,8 +12,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class PartnumberSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    modified = serializers.DateTimeField(format='%d %b %Y')
 
     class Meta:
         model = Partnumber
-        fields = ['id', 'sku', 'description', 'unit', 'pmu', 'db_nr',
+        fields = ['id', 'sku', 'description', 'get_unit_display', 'unit', 'pmu', 'db_nr',
         'category', 'created', 'modified']

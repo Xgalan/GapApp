@@ -12,32 +12,23 @@
     </div>
     {% endfor %}
 {% endif %}
-<div class="row">
-    <div class="col-xs-12 col-md-4">
-        <p>
-            <a class="btn btn-default hidden-print" href="{% url 'lot_create' %}" role="button">
-                Aggiungi
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
-        </p>
+<form class="form-inline" id="frmLotSearch" method="GET" role="search">
+    <div class="form-group">
+        <select name="lotSearch" class="form-control" style="width: 100%;"
+            data-ajax--url="{% url 'lot_list' %}"></select>
     </div>
-    <div class="col-xs-12 col-md-8">
-
-        <form class="form-inline" id="frmLotSearch" method="GET" role="search">
-            <div class="form-group">
-                <select name="lotSearch" class="form-control" style="width: 100%;"
-                    data-ajax--url="{% url 'api_lot_list' %}"></select>
-            </div>
-            <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-        </form>
-    </div>
-</div>
-
-{% if lot_list %}
+    <button type="submit" class="btn btn-default">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    </button>
+</form>
+<br>
+<a class="btn btn-default hidden-print" href="{% url 'lot_create' %}" role="button">
+    Aggiungi <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+{% if results %}
+{% include "pagination.html" %}
 <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
-        <caption>Lotti recenti</caption>
+        <caption>Lista Lotti</caption>
         <thead>
             <tr>
                 <th>#</th>
@@ -47,12 +38,12 @@
             </tr>
         </thead>
         <tbody>
-        {% for lot in lot_list %}
+        {% for lot in results %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td><a href="{% url 'lot_detail' lot.id %}">{{ lot }}</a></td>
-                <td>{{ lot.lot_date|date }}</td>
-                <td>{{ lot.modified|date }}</td>
+                <td><a href="{% url 'lot_detail' lot.id %}">{{ lot.lot_display }}</a></td>
+                <td>{{ lot.lot_date }}</td>
+                <td>{{ lot.modified }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -61,46 +52,49 @@
 {% else %}
 <p>Nessun lotto presente.</p>
 {% endif %}
+    <div class="well well-sm">
+        Totale Lotti: {{ count }}
+    </div>
 </div>
 {% endblock %}
 {% block page_script %}
 <script>
-    $(function() {
-        var selectLotSearch = $( "select[name='lotSearch']" );
+$(function() {
+    var selectLotSearch = $( "select[name='lotSearch']" );
 
-        selectLotSearch.select2({
-            placeholder: 'Cerca lotto...',
-            theme: "bootstrap",
-            minimumInputLength: 1,
-            ajax: {
-                dataType: 'json',
-                data: function (params) {
-                    var query = {
-                    search: params.term
-                    }
-                    return query;
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(obj) {
-                            return {
-                                id: obj.id,
-                                text: obj.lot_display
-                            };
-                        })
-                    };
+    selectLotSearch.select2({
+        placeholder: 'Cerca lotto...',
+        theme: "bootstrap",
+        minimumInputLength: 1,
+        ajax: {
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                search: params.term
                 }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: $.map(data.results, function(obj) {
+                        return {
+                            id: obj.id,
+                            text: obj.lot_display
+                        };
+                    })
+                };
             }
-        });
-
-        $( "#frmLotSearch" ).submit(function( event ) {
-            event.preventDefault();
-
-            const searchVal = $( this ).serializeArray()[0];
-            const urlSearch = `/inspections/${searchVal.value}`;
-            $( this ).attr('action', urlSearch);
-            $( this )[0].submit();
-        });
+        }
     });
+
+    $( "#frmLotSearch" ).submit(function( event ) {
+        event.preventDefault();
+
+        const searchVal = $( this ).serializeArray()[0];
+        const urlSearch = `/inspections/${searchVal.value}`;
+        $( this ).attr('action', urlSearch);
+        $( this )[0].submit();
+    });
+});
 </script>
 {% endblock %}

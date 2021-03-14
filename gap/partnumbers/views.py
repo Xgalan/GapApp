@@ -3,45 +3,70 @@ from datetime import datetime
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Max
+from django.db.models import Max, Q
 
-from rest_framework import viewsets
-from rest_framework import permissions
-from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from core.views import StandardResultsSetPagination
 from partnumbers.models import Partnumber, Category
 from partnumbers.forms import PartnumberForm
 from partnumbers.serializers import PartnumberSerializer
 
 
 
-class PartnumberViewSet(viewsets.ModelViewSet):
+class PartnumberViewSet(ModelViewSet):
     """
     API endpoint that allows partnumbers to be viewed or edited.
     """
-    queryset = Partnumber.objects.all()
+    queryset = Partnumber.objects.select_related('category').all()
     serializer_class = PartnumberSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'partnumbers/api_list.html'
+    filter_backends = [SearchFilter]
     search_fields = ['sku']
 
+    @action(
+        detail=False,
+        methods=['get'],
+        renderer_classes=[TemplateHTMLRenderer]
+    )
+    def print_list(self, request):
+        q = Partnumber.objects.select_related('category').exclude(
+            Q(category__category_name='Prodotto Finito') | 
+            Q(category__category_name='Materiale di consumo')
+            ).order_by('sku')
+        return Response({'partnumbers_list': q}, template_name='partnumbers/print_list.html')
+    
+    @action(
+        detail=False,
+        methods=['get']
+    )
+    def category_filter(self, request):
+        #TODO: add option for filtering objects based on category
+        pass
 
-class IndexView(LoginRequiredMixin, generic.ListView):
-    paginate_by = 16
-    template_name = 'partnumbers/list.html'
-    context_object_name = 'partnumbers_list'
 
-    def get_queryset(self):
-        return Partnumber.objects.select_related('category').order_by('sku')
+class CreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = Partnumber
+    form_class = PartnumberForm
+    template_name_suffix = '_create_form'
 
-
-class PrintListView(LoginRequiredMixin, generic.ListView):
-    template_name = 'partnumbers/print_list.html'
-    context_object_name = 'partnumbers_list'
-
-    def get_queryset(self):
-        return Partnumber.objects.select_related('category').exclude(
-            category__category_name='Prodotto Finito').order_by('sku')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Find the MAX db_nr
+        q = Partnumber.objects.all().aggregate(Max('db_nr'))['db_nr__max']
+        if q:
+            context['new_db_nr'] = q + 1
+        else:
+            context['new_db_nr'] = 0
+        return context
 
 
 class PrintDetailView(LoginRequiredMixin, generic.DetailView):
@@ -66,22 +91,14 @@ class PrintDetailView(LoginRequiredMixin, generic.DetailView):
             picking_date__year=current_year).order_by('picking_date'))
         context['pickings'] = past_year_picking + current_year_pickings
         context['dates'] = [d.year for d in self.object.picking_set.dates('picking_date', 'year')]
-        return context
 
-
-class CreateView(LoginRequiredMixin, generic.edit.CreateView):
-    model = Partnumber
-    form_class = PartnumberForm
-    template_name_suffix = '_create_form'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Find the MAX db_nr
-        q = Partnumber.objects.all().aggregate(Max('db_nr'))['db_nr__max']
-        if q:
-            context['new_db_nr'] = q + 1
-        else:
-            context['new_db_nr'] = 0
+        from operator import iconcat
+        pg = [iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.object.item_set.filter(area='pg')]
+        se = [iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.object.item_set.filter(area='se')]
+        context['storages'] = {
+            "pg": pg,
+            "se": se
+        }
         return context
 
 

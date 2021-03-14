@@ -1,0 +1,20 @@
+<span class="step-links">
+    <div class="btn-group" role="group" aria-label="...">
+    {% if previous %}
+        <a class="btn btn-default" href="?page=1">
+            <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
+        </a>
+        <a class="btn btn-default" href="{{ previous }}">
+            <span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
+        </a>
+    {% endif %}
+    {% if next %}
+        <a class="btn btn-default" href="{{ next }}">
+            <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+        </a>
+        <a class="btn btn-default" href="?page=last">
+            <span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span>
+        </a>
+    {% endif %}
+    </div>
+</span>

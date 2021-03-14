@@ -20,14 +20,16 @@ from django.urls import path, include
 from rest_framework import routers
 
 from partnumbers.views import PartnumberViewSet
+from pickings.views import PickingViewSet
+
 
 
 router = routers.DefaultRouter()
-router.register(r'partnumbers', PartnumberViewSet)
+router.register(r'partnumbers', PartnumberViewSet, basename='partnumber')
+router.register(r'pickings', PickingViewSet, basename='picking')
 
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -39,3 +41,7 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('', include('core.urls')),
 ]
+
+
+admin.site.site_header = "GAP - Gestione passaggio sottoassiemi e componenti in area prelievo"
+admin.site.index_title = "Pannello di controllo"

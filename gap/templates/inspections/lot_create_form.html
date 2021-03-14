@@ -31,12 +31,13 @@
 {% endblock %}
 {% block page_script %}
 <script>
-    const picker = datepicker('#id_lot_date', {
-        formatter: (input, date, instance) => {
-            const value = date.toLocaleDateString()
-            input.value = value  // => '2099-01-01'
-        },
-        noWeekends: true
+$(function() {
+    $("#id_lot_date").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        defaultDate: Date.now(),
     });
+});
 </script>
 {% endblock %}

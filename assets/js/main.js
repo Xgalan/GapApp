@@ -77,7 +77,7 @@ $(function() {
             },
             processResults: function(data) {
                 return {
-                    results: $.map(data, function(obj) {
+                    results: $.map(data.results, function(obj) {
                         return {
                             id: obj.id,
                             text: obj.sku

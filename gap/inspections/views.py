@@ -8,20 +8,25 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework import permissions
 from rest_framework import filters
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
+from core.views import StandardResultsSetPagination
 from inspections.models import Lot
 from inspections.forms import LotForm
 from inspections.serializers import LotSerializer
 
 
 
-class ListAPIView(ListAPIView):
-    
-    """  API endpoint that allows to retrieve a list of lots """
-
+class ListView(ListAPIView):
+    """  
+    API endpoint that allows to retrieve a list of lots 
+    """
     queryset = Lot.objects.all()
     serializer_class = LotSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'inspections/list.html'
     filter_backends = [filters.SearchFilter]
     search_fields = ['lot_number']
 
@@ -70,14 +75,6 @@ class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateVie
         else:
             return reverse_lazy('lot_list')
 
-class ListView(LoginRequiredMixin, generic.ListView):
-    model = Lot
-    context_object_name = 'lot_list'
-    template_name = 'inspections/list.html'
-
-    def get_queryset(self):
-        """ Return the last twenty lots """
-        return Lot.objects.all()[:20]
 
 
 class DetailView(LoginRequiredMixin, generic.DetailView):

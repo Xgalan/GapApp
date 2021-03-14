@@ -4,7 +4,6 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='picking_recents'),
     path('<int:pk>/', views.UpdateView.as_view(), name='picking_update'),
     path('add/', views.CreateView.as_view(), name='picking_create'),
     path('add/<uuid:pn_id>/', views.CreateView.as_view(), name='picking_create_pn'),

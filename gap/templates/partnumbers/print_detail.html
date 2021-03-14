@@ -33,8 +33,6 @@
                     </span></td>
             </tr>
             <tr>
-                <td>Nr. DB contapezzi:<br>
-                    <span class="pull-right">{{ object.db_nr }}</span></td>
                 <td>Unità stock:<br>
                     <span class="pull-right">
                         {{ object.get_unit_display }}
@@ -43,6 +41,46 @@
                     <span class="pull-right">
                         {{ object.pmu }}
                     </span></td>
+                <td>Nr. DB contapezzi:<br>
+                    <span class="pull-right">{{ object.db_nr }}</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Area magazzino
+                </th>
+                <th>
+                    Area prelievo
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{% for se in storages.se %}
+                    <ul class="list-inline">
+                        <li>{{ forloop.counter }}.</li>
+                        {% for s in se %}
+                        <li>{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% empty %}
+                    Nessun magazzino presente.
+                    {% endfor %}
+                </td>
+                <td>{% for pg in storages.pg %}
+                    <ul class="list-inline">
+                        <li>{{ forloop.counter }}.</li>
+                        {% for p in pg %}
+                        <li>{{ p }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% empty %}
+                    Nessuna area prelievo presente.
+                    {% endfor %}
+                </td>
             </tr>
         </tbody>
     </table>
