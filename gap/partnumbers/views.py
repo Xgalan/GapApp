@@ -30,7 +30,7 @@ class PartnumberViewSet(ModelViewSet):
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
     template_name = 'partnumbers/api_list.html'
     filter_backends = [SearchFilter]
-    search_fields = ['sku']
+    search_fields  = ['sku']
 
     @action(
         detail=False,
@@ -43,14 +43,6 @@ class PartnumberViewSet(ModelViewSet):
             Q(category__category_name='Materiale di consumo')
             ).order_by('sku')
         return Response({'partnumbers_list': q}, template_name='partnumbers/print_list.html')
-    
-    @action(
-        detail=False,
-        methods=['get']
-    )
-    def category_filter(self, request):
-        #TODO: add option for filtering objects based on category
-        pass
 
 
 class CreateView(LoginRequiredMixin, generic.edit.CreateView):

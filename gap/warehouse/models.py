@@ -15,8 +15,12 @@ class Item(TimeStampedModel):
         (PICKING, 'Area prelievo'),
         (STORAGE, 'Area magazzino')
     ]
-    partnumber = models.ForeignKey(Partnumber, on_delete=models.RESTRICT)
-    storage = models.ForeignKey('Storage', on_delete=models.RESTRICT)
+    partnumber = models.ForeignKey(
+        Partnumber, on_delete=models.RESTRICT, verbose_name='codice'
+    )
+    storage = models.ForeignKey(
+        'Storage', on_delete=models.RESTRICT, verbose_name='magazzino'
+    )
     area = models.CharField(
         max_length=3,
         choices=AREA,
@@ -53,6 +57,7 @@ class Storage(MP_Node):
         (BIN, 'Contenitore')
     ]
     location = models.CharField(
+        verbose_name='coordinata',
         max_length=30
     )
     container_type = models.CharField(

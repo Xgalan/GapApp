@@ -19,22 +19,6 @@ from pickings.forms import PickingForm
 
 
 
-class PickingListView(ListAPIView):
-    """
-    API endpoint that retrieves all the pickings with a specified partnumber.
-    """
-    serializer_class = PickingSerializer
-    permission_classes = [IsAuthenticated,]
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the pickings for
-        the partnumber as determined by the uuid portion of the URL.
-        """
-        id_ = self.kwargs['pk']
-        return Picking.objects.filter(partnumber__id=id_)
-
-
 class PickingViewSet(ModelViewSet):
     """  
     CRUD API endpoint for pickings 
@@ -54,6 +38,21 @@ class PickingViewSet(ModelViewSet):
         else:
             return Picking.objects.filter(
                 picking_operator=self.request.user).order_by('-modified')
+    
+    @action(
+        detail=True,
+        methods=['get'],
+        renderer_classes=[JSONRenderer]
+    )
+    def partnumber(self, request, pk=None):
+        q = Picking.objects.filter(partnumber__id=pk).order_by('picking_date')
+        page = self.paginate_queryset(q)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(q, many=True)
+        return Response(serializer.data)
 
 
 class CreateView(LoginRequiredMixin, generic.edit.CreateView):
