@@ -3,7 +3,7 @@ from datetime import datetime
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Max, Q
+from django.db.models import Q
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -52,12 +52,8 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Find the MAX db_nr
-        q = Partnumber.objects.all().aggregate(Max('db_nr'))['db_nr__max']
-        if q:
-            context['new_db_nr'] = q + 1
-        else:
-            context['new_db_nr'] = 0
+        context['new_db_nr'] = Partnumber.db.new_db_nr()
+        context['db_free_nr'] = Partnumber.db.db_free_nr()
         return context
 
 
@@ -83,13 +79,9 @@ class PrintDetailView(LoginRequiredMixin, generic.DetailView):
             picking_date__year=current_year).order_by('picking_date'))
         context['pickings'] = past_year_picking + current_year_pickings
         context['dates'] = [d.year for d in self.object.picking_set.dates('picking_date', 'year')]
-
-        from operator import iconcat
-        pg = [iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.object.item_set.filter(area='pg')]
-        se = [iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.object.item_set.filter(area='se')]
         context['storages'] = {
-            "pg": pg,
-            "se": se
+            "pg": self.object.picking_area(),
+            "se": self.object.storage_area()
         }
         return context
 

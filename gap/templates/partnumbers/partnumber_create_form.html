@@ -20,6 +20,11 @@
         </form>
     </div>
     <div class="panel-footer">
-        Numero da usare per inserimento in database contapezzi: <b>{{ new_db_nr }}</b></div>
+        Numero da usare per inserimento in database contapezzi: <b>{{ new_db_nr }}</b><br>
+        Numeri liberi:
+        {% for n in db_free_nr %}
+            {{ n }}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

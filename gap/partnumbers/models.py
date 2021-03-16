@@ -1,4 +1,5 @@
 import uuid
+from operator import iconcat
 
 from django.db import models
 
@@ -15,6 +16,27 @@ class Category(TimeStampedModel):
 
     def __str__(self):
         return "%s" % self.category_name
+
+
+class DbManager(models.Manager):
+    """
+    Utilities that returns data relatives to weight scale database
+    """
+    def get_max_nr(self):
+        # Find the MAX db_nr
+        return self.aggregate(models.Max('db_nr'))
+
+    def new_db_nr(self):
+        q = self.get_max_nr()['db_nr__max']
+        if q:
+            return q + 1
+        else:
+            return 0
+
+    def db_free_nr(self):
+        from itertools import chain
+        min_max = set(range(0,self.new_db_nr()))
+        return sorted(min_max.difference(set(chain.from_iterable(self.values_list('db_nr')))))
 
 
 class Partnumber(TimeStampedModel):
@@ -38,6 +60,19 @@ class Partnumber(TimeStampedModel):
     db_nr = models.IntegerField(null=True, blank=True)
     category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE)
+
+    objects = models.Manager()
+    db = DbManager()
+    
+    def picking_area(self):
+        return [
+            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.item_set.filter(area='pg')
+        ]
+
+    def storage_area(self):
+        return [
+            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.item_set.filter(area='se')
+        ]
 
     def __str__(self):
         return "{self.sku} | {self.category}".format(self=self)
