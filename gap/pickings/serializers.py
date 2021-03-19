@@ -24,3 +24,4 @@ class PickingSerializer(serializers.ModelSerializer):
         model = Picking
         fields = ['id', 'partnumber', 'partnumber_display', 'lot', 'picking_date',
         'picking_operator', 'picking_date_display', 'created', 'modified']
+        read_only_fields = ['created', 'modified', 'picking_date_display', 'partnumber_display']
