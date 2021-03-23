@@ -40,7 +40,8 @@ class PartnumberViewSet(ModelViewSet):
     def print_list(self, request):
         q = Partnumber.objects.select_related('category').exclude(
             Q(category__category_name='Prodotto Finito') | 
-            Q(category__category_name='Materiale di consumo')
+            Q(category__category_name='Materiale di consumo') |
+            Q(category__category_name='Bimetallo in nastro')
             ).order_by('sku')
         return Response({'partnumbers_list': q}, template_name='partnumbers/print_list.html')
 
