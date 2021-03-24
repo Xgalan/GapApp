@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import json
 from pathlib import Path
+
+from core.utilities import get_secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+with open(BASE_DIR.parent / "secrets.json") as f:
+    secrets = json.loads(f.read())
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -89,7 +93,8 @@ WSGI_APPLICATION = 'gap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'gap_db.sqlite3',
+        #'NAME': BASE_DIR / 'gap_db.sqlite3',
+        'NAME': BASE_DIR / get_secret('DATABASE', secrets=secrets),
     }
 }
 

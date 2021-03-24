@@ -48,4 +48,5 @@ static
 # Databases
 *.sqlite3
 
-
+# Secrets
+secrets.json

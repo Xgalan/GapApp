@@ -1,0 +1,8 @@
+Write a "secrets.json" file with the following structure:
+
+{
+	"SECRET_KEY": "your django project secret key,
+	"DATABASE": "your django project database name",
+}
+
+Define you HOST and PORT in the "gunicorn.conf.py" file.
