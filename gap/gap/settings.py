@@ -24,7 +24,7 @@ with open(BASE_DIR.parent / "secrets.json") as f:
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-hmof7k#!0m#vvx!fe@_vvs7q^uw97rh3fkik3g6!3#5qivuuc'
+SECRET_KEY = get_secret('SECRET_KEY', secrets=secrets)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,7 +93,6 @@ WSGI_APPLICATION = 'gap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'gap_db.sqlite3',
         'NAME': BASE_DIR / get_secret('DATABASE', secrets=secrets),
     }
 }
