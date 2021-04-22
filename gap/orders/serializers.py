@@ -11,10 +11,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Orderitem
+        fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):
     customer_display = serializers.ReadOnlyField(source='customer.name')
+    shipdate = serializers.DateField(format='%d %b %Y')
+    orderdate = serializers.DateField(format='%d %b %Y')
     items = ProductSerializer(source='orderitem_set', many=True)
 
     class Meta:

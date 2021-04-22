@@ -3,55 +3,39 @@
 {% block content %}
 <div class="col-xs-12 col-md-10 col-md-offset-1">
     <h3>Totale Prodotto Finito Richiesto <small>Suddiviso per settimana</small></h3>
-    <hr>
-    <div id="orderitem-list"></div>
+<hr>
+{% if results %}
+{% for o in results %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">S{% for k in o.keys %}{{ k }}{% endfor %}
+            <small>Prodotto finito richiesto</small>
+        </h3></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Codice</th>
+                <th>Quantità totale</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in o.values %}
+                {% for p in q %}
+                <tr>
+                    <td><a href="{% url 'partnumber_update' p.partnumber %}">
+                    {{ p.partnumber__sku }}</a></td>
+                    <td>{{ p.total }}</td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endfor %}
+{% else %}
+<p>Nessun ordine cliente registrato.</p>
+{% endif %}
 </div>
 {% endblock %}
 {% block page_script %}
-<script>
-$(function() {
-
-    $.ajax({
-        url: "{% url 'api_order_list' %}",
-    }).done(function( data ) {
-        var htmlStr = '';
-
-        if (arrayIsEmpty(data)) {
-            htmlStr = '<h4>Nessun ordine cliente trovato.</h4>';
-        } else {
-            data.forEach(function(weeks) {
-                const keys = Object.keys(weeks);
-
-                // iterate over object
-                keys.forEach((key, index) => {
-
-                    htmlStr += html`
-                        <div class="panel panel-default">
-                        <div class="panel-heading">${key}</div>
-                        <div class="panel-body"><p>Prodotto finito richiesto nella S${key}</p></div>
-                        <table class="table"><thead><tr>
-                            <th>Codice</th>
-                            <th>Quantità totale</th>
-                        </tr></thead><tbody>`
-                
-                    weeks[key].forEach(function(el) {
-                        htmlStr += html`
-                        <tr>
-                            <td><a href="/partnumbers/${el.partnumber}">
-                            ${el.partnumber__sku}</td>
-                            <td>${el.total}</td>
-                        </tr>
-                        `
-                    });
-
-                    htmlStr += '</tbody></table></div>';
-                        
-                });
-            });
-        }
-
-        $('#orderitem-list').html(htmlStr);
-    });
-});
-</script>
 {% endblock %}

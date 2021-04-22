@@ -1,26 +1,44 @@
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 
-from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
+from rest_framework.decorators import action
 
+from core.views import StandardResultsSetPagination
 from orders.models import Order, Orderitem
-from orders.serializers import ItemSerializer
+from orders.serializers import OrderSerializer, ItemSerializer
 
 
 
-class OrderListView(LoginRequiredMixin, ListView):
-    model = Order
-    context_object_name = 'orders'
-    paginate_by = 16
+class OrderViewSet(ModelViewSet):
+    """
+    API endpoint that allows orders to be viewed or edited.
+    """
+    queryset = Order.objects.select_related('customer').all()
+    serializer_class = OrderSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'orders/api_list.html'
+    filter_backends = [SearchFilter]
+    search_fields  = ['coc']
 
-
-class OrderitemByWeekView(LoginRequiredMixin, TemplateView):
-    template_name = 'orders/orderitem_list.html'
+    @action(
+        detail=False,
+        methods=['get']
+    )
+    def requested(self, request):
+        q = Orderitem.groupby.isoweek_open()
+        if request.accepted_renderer.format == 'html':
+            return Response({'results': q}, template_name='orders/orderitem_list.html')
+        return Response(q)
 
 
 class OrderitemByPartnumber(ListAPIView):
@@ -35,14 +53,6 @@ class OrderitemByPartnumber(ListAPIView):
                 Q(status='planned') | Q(status='released'),
                 partnumber=id_
             )
-
-
-class OrderListAPIView(APIView):
-    permission_classes = [IsAuthenticated,]
-
-    def get(self, request, format=None):
-        objects = Orderitem.groupby.isoweek_open()
-        return Response(objects)
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):

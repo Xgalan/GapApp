@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% block title %}GAP - Lista Ordini Cliente{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-10 col-md-offset-1">
+    <h3>Lista Ordini Cliente</h3>
+<hr>
+{% if results %}
+{% include "pagination.html" %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <caption>Lista ordini cliente - archivio</caption>
+        <thead>
+            <tr>
+                <th>Nr. COC</th>
+                <th>Cliente</th>
+                <th>Data ordine</th>
+                <th>Data di consegna</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in results %}
+            <tr>
+                <td>{{ o.coc }}
+                    <a class="btn btn-default btn-xs pull-right" href="{% url 'order_detail' o.id %}" role="button">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td>{{ o.customer_display }}</td>
+                <td>{{ o.orderdate }}</td>
+                <td>{{ o.shipdate }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>Nessun ordine cliente registrato.</p>
+{% endif %}
+    <div class="well well-sm">
+        Totale Ordini: {{ count }}
+    </div>
+</div>
+{% endblock %}

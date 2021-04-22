@@ -21,12 +21,14 @@ from rest_framework import routers
 
 from partnumbers.views import PartnumberViewSet
 from pickings.views import PickingViewSet
+from orders.views import OrderViewSet
 
 
 
 router = routers.DefaultRouter()
 router.register(r'partnumbers', PartnumberViewSet, basename='partnumber')
 router.register(r'pickings', PickingViewSet, basename='picking')
+router.register(r'orders', OrderViewSet, basename='order')
 
 
 urlpatterns = [
