@@ -88,7 +88,7 @@ $(function() {
     getOrders.click(function( event ) {
         event.preventDefault();
 
-        $.getJSON("{% url 'orderitem_by_pn' object.id %}").done(function( data ) {
+        $.getJSON("{% url 'order-bypartnumber' object.id %}").done(function( data ) {
             if (arrayIsEmpty(data)) {
                 alert(notFoundMsg);
             } else {
@@ -97,7 +97,7 @@ $(function() {
 
                     htmlStr += html`
                         <tr>
-                            <td><a href="/orders/${el.coc}">${el.coc_display}</a></td>
+                            <td><a href="/api/orders/${el.coc}">${el.coc_display}</a></td>
                             <td>${el.customer}</td>
                             <td>${el.status_display}</td>
                             <td>${el.quantity}</td>

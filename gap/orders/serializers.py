@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Order, Orderitem
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
     coc_view = serializers.ReadOnlyField(source='coc.coc')
     shipdate = serializers.ReadOnlyField(source='coc.shipdate')

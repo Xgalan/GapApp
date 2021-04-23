@@ -108,7 +108,6 @@ class Order(ValuesMixin, TimeStampedModel):
 
 
 class OrderitemsFilter(models.Manager):
-
     """ Filter by specific arguments. """
 
     def status_changed_in_range(self, start_date, end_date, status):
@@ -143,7 +142,6 @@ class OrderitemsFilter(models.Manager):
 
 
 class OrderitemsGroupBy(models.Manager):
-
     """ Various aggregates """
 
     def total_status_open(self):
@@ -159,7 +157,6 @@ class OrderitemsGroupBy(models.Manager):
         )
 
     def isoweek_open(self):
-
         """ Group items in order by isoweek """
 
         dates = self.select_related('coc').filter(

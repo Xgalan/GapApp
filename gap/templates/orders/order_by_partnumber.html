@@ -1,0 +1,26 @@
+{% if results %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>COC nr.</th>
+            <th>Cliente</th>
+            <th>Stato di produzione</th>
+            <th>Quantità</th>
+            <th>Data di consegna</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for el in results %}
+        <tr>
+            <td><a href="{% url 'order-detail' el.coc.id %}">{{ el.coc.coc }}</a></td>
+            <td>{{ el.coc.customer }}</td>
+            <td>{{ el.get_status_display }}</td>
+            <td>{{ el.quantity }}</td>
+            <td>{{ el.coc.shipdate|date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Nessun ordine trovato.</p>
+{% endif %}
