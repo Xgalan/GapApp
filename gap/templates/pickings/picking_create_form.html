@@ -2,7 +2,7 @@
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
 {% block form %}
 <p>
-    <a href="{% url 'picking-list' %}" class="btn btn-default btn-sm"> 
+    <a href="{% url 'picking-list' %}" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
         Movimenti</a>
     {% if view.kwargs.pn_id %}
@@ -38,6 +38,34 @@ $(function() {
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
+    });
+
+    const partnumberFormSearch = $("#id_partnumber");
+
+    partnumberFormSearch.select2({
+        placeholder: "Cerca codice...",
+        minimumInputLength: 2,
+        theme: "bootstrap",
+        ajax: {
+            url: "{% url 'partnumber-list' %}",
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                  search: params.term
+                }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: $.map(data.results, function(obj) {
+                        return {
+                            id: obj.id,
+                            text: obj.sku
+                        };
+                    })
+                };
+            }
+        }
     });
 });
 </script>

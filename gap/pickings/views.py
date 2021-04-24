@@ -20,8 +20,8 @@ from pickings.forms import PickingForm
 
 
 class PickingViewSet(ModelViewSet):
-    """  
-    CRUD API endpoint for pickings 
+    """
+    CRUD API endpoint for pickings
     """
     queryset = Picking.objects.all()
     serializer_class = PickingSerializer
@@ -38,7 +38,7 @@ class PickingViewSet(ModelViewSet):
         else:
             return Picking.objects.filter(
                 picking_operator=self.request.user).order_by('-modified')
-    
+
     @action(
         detail=True,
         methods=['get'],
@@ -87,7 +87,6 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 
 class UpdateView(LoginRequiredMixin, generic.edit.UpdateView):
-    #TODO: migliorare inserimento dati, ovvero ricerca ajax (htmx?) nel form per campi codice e lotto
     model = Picking
     form_class = PickingForm
     template_name_suffix = '_update_form'

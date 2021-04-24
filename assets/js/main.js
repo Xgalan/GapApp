@@ -46,7 +46,7 @@ var util = (function () {
         }
     });
     }());
- 
+
 // Tagged template function
 function html(pieces) {
     var result = pieces[0];
