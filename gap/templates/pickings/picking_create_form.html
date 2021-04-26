@@ -41,6 +41,7 @@ $(function() {
     });
 
     const partnumberFormSearch = $("#id_partnumber");
+    const lotFormSearch = $("#id_lot");
 
     partnumberFormSearch.select2({
         placeholder: "Cerca codice...",
@@ -61,6 +62,32 @@ $(function() {
                         return {
                             id: obj.id,
                             text: obj.sku
+                        };
+                    })
+                };
+            }
+        }
+    });
+
+    lotFormSearch.select2({
+        placeholder: "Cerca lotto...",
+        minimumInputLength: 1,
+        theme: "bootstrap",
+        ajax: {
+            url: "{% url 'lot_list' %}",
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                  search: params.term
+                }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: $.map(data.results, function(obj) {
+                        return {
+                            id: obj.id,
+                            text: obj.lot_display
                         };
                     })
                 };
