@@ -63,7 +63,10 @@ class RequestedManager(models.Manager):
 
 
 class Company(ValuesMixin, TimeStampedModel):
-    name = models.CharField(max_length=120, unique=True)
+    name = models.CharField(
+        max_length=120,
+        unique=True
+    )
 
     def __str__(self):
         return "%s" % self.name
@@ -81,9 +84,18 @@ class Order(ValuesMixin, TimeStampedModel):
     """ 
     This model represent an order from a customer. 
     """
-    coc = models.CharField("nr COC", max_length=60, db_index=True)
-    orderdate = models.DateField("order date", db_index=True)
-    shipdate = models.DateField("shipment date", db_index=True)
+    coc = models.CharField(
+        "nr COC", max_length=60,
+        db_index=True
+    )
+    orderdate = models.DateField(
+        "order date",
+        db_index=True
+    )
+    shipdate = models.DateField(
+        "shipment date",
+        db_index=True
+    )
     customer = models.ForeignKey(
         Company,
         on_delete=models.RESTRICT
