@@ -18,6 +18,7 @@ setuptools.setup(
         "django-filter",
         "pyyaml",
         "uritemplate",
+        "whitenoise",
     ],
     include_package_data=True,
     python_requires='>=3.6',
