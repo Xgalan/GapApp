@@ -141,6 +141,7 @@ ASSETS_DIR = BASE_DIR.parent.resolve() / 'assets'
 STATICFILES_DIRS = (
     ASSETS_DIR,
 )
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
