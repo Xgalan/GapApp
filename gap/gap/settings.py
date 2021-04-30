@@ -17,7 +17,7 @@ from core.utilities import get_secret
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-with open(BASE_DIR.parent / "secrets.json") as f:
+with open(BASE_DIR / "secrets.json") as f:
     secrets = json.loads(f.read())
 
 # Quick-start development settings - unsuitable for production
@@ -135,8 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR.parent.resolve() / 'static'
-ASSETS_DIR = BASE_DIR.parent.resolve() / 'assets'
+STATIC_ROOT = BASE_DIR.resolve() / 'static'
+ASSETS_DIR = BASE_DIR.resolve() / 'assets'
 
 STATICFILES_DIRS = (
     ASSETS_DIR,

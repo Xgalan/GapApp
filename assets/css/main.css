@@ -41,10 +41,6 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-div.jumbotron {
-    background-image: url("/static/images/bghome.jpg");
-}
-
 .cellreport {
     background-color: lightgray;
     text-align: center;
