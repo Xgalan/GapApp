@@ -6,7 +6,7 @@ then
     docker build -t gapimage ./
 fi
 docker volume create gapapp
-docker run -d -p 8000:80 \
+docker run -d -p 8080:80 \
     --name gapapp \
     -v gapapp:/app \
     -e MODULE_NAME="gap.wsgi" \
