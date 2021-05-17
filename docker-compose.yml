@@ -1,0 +1,21 @@
+version: "2.3"
+volumes:
+  gapapp:
+    external: true
+services:
+  gapimage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    image: gapimage:latest
+    container_name: gapapp
+    environment:
+      - TZ=Europe/Rome
+      - MODULE_NAME=gap.wsgi
+      - VARIABLE_NAME=application
+    volumes:
+      - gapapp:/app
+    ports:
+      - "8000:80"
+    restart: unless-stopped
