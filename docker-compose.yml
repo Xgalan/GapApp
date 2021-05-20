@@ -1,7 +1,8 @@
-version: "2.3"
+version: "2.4"
 volumes:
   gapapp:
     external: true
+  static:
 services:
   gapimage:
     build:
@@ -16,6 +17,7 @@ services:
       - VARIABLE_NAME=application
     volumes:
       - gapapp:/app
+      - static:/app/static
     ports:
       - "8000:80"
     restart: unless-stopped
