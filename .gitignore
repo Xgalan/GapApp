@@ -50,3 +50,6 @@ static
 
 # Secrets
 secrets.json
+
+# Docker
+.env

@@ -1,7 +1,6 @@
 version: "2.4"
 volumes:
   gapapp:
-    external: true
   static:
 services:
   gapimage:
@@ -18,6 +17,7 @@ services:
     volumes:
       - gapapp:/app
       - static:/app/static
+      - ${DB_PATH}:/app/gap_db.sqlite3 # use a .env file with DB_PATH=absolute path to db file
     ports:
       - "8000:80"
     restart: unless-stopped
