@@ -1,7 +1,6 @@
 FROM tiangolo/meinheld-gunicorn:python3.8
 
 COPY ./gap /app
-ADD secrets.json /app/secrets.json
 ADD ./assets /app/assets
 COPY setup.py setup.py
 RUN /bin/bash -c 'rm /app/main.py'

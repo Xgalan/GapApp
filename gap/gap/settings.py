@@ -9,32 +9,26 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-import json
 from pathlib import Path
 
-from core.utilities import get_secret
+import environ
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-with open(BASE_DIR / "secrets.json") as f:
-    secrets = json.loads(f.read())
+env = environ.Env()
+env.read_env(str(BASE_DIR / ".env"))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret('SECRET_KEY', secrets=secrets)
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SECRET_KEY = env("SECRET_KEY")
+DEBUG = env.bool("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = ['*']
 LOGIN_REDIRECT_URL = '/'
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'partnumbers.apps.PartnumbersConfig',
     'pickings.apps.PickingsConfig',
@@ -92,11 +86,9 @@ WSGI_APPLICATION = 'gap.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / get_secret('DATABASE', secrets=secrets),
-    }
+    'default': env.db("SQLITE_URL")
 }
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 
 # Password validation
@@ -131,10 +123,24 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+# SECURITY
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
+SESSION_COOKIE_HTTPONLY = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
+CSRF_COOKIE_HTTPONLY = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
+SECURE_BROWSER_XSS_FILTER = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
+X_FRAME_OPTIONS = "DENY"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR.resolve() / 'static'
 ASSETS_DIR = BASE_DIR.resolve() / 'assets'
 

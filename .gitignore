@@ -42,14 +42,9 @@ nosetests.xml
 # Sphinx documentation
 docs/_build/
 
-# Django dirs
+# Django + Docker
 static
+.env
 
 # Databases
 *.sqlite3
-
-# Secrets
-secrets.json
-
-# Docker
-.env
