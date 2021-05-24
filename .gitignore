@@ -43,6 +43,8 @@ nosetests.xml
 docs/_build/
 
 # Django + Docker
+migrations
+fixtures
 static
 .env
 

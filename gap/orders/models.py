@@ -80,6 +80,11 @@ class Company(ValuesMixin, TimeStampedModel):
         verbose_name_plural = 'companies'
 
 
+class OrderManager(models.Manager):
+    def get_by_natural_key(self, coc, orderdate):
+        return self.get(coc, orderdate)
+
+
 class Order(ValuesMixin, TimeStampedModel):
     """ 
     This model represent an order from a customer. 
@@ -110,8 +115,11 @@ class Order(ValuesMixin, TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk})
+    
+    def natural_key(self):
+        return (self.coc, self.orderdate)
 
-    objects = models.Manager()
+    objects = OrderManager()
     requested = RequestedManager()
 
     class Meta:

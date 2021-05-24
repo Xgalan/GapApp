@@ -1,0 +1,6 @@
+#!/bin/bash
+./manage.py loaddata partnumbers
+./manage.py loaddata inspections
+./manage.py loaddata pickings
+./manage.py loaddata orders
+./manage.py loaddata warehouse
