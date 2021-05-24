@@ -7,4 +7,5 @@ RUN /bin/bash -c 'rm /app/main.py'
 RUN /bin/bash -c 'pip install --editable .'
 RUN /bin/bash -c './manage.py makemigrations'
 RUN /bin/bash -c './manage.py migrate'
+RUN /bin/bash -c 'cat createsuperuser.example | ./manage.py shell' #username=admin password=admin
 RUN /bin/bash -c './manage.py collectstatic --no-input'
