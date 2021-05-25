@@ -39,6 +39,11 @@ class DbManager(models.Manager):
         return sorted(min_max.difference(set(chain.from_iterable(self.values_list('db_nr')))))
 
 
+class PartnumberManager(models.Manager):
+    def get_by_natural_key(self, sku):
+        return self.get(sku=sku)
+
+
 class Partnumber(TimeStampedModel):
     PCS = 'pcs'
     G = 'gr'
@@ -61,9 +66,9 @@ class Partnumber(TimeStampedModel):
     category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE)
 
-    objects = models.Manager()
+    objects = PartnumberManager()
     db = DbManager()
-    
+
     def picking_area(self):
         return [
             iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.item_set.filter(area='pg')

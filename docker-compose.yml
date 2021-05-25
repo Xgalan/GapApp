@@ -1,23 +1,20 @@
-version: "2.4"
+version: "3.1"
 volumes:
-  gapapp:
-  static:
+  gapapp_v1:
 services:
-  gapimage:
+  gapapp-v1:
     build:
       context: .
       dockerfile: Dockerfile
-      network: host
-    image: gapimage:latest
-    container_name: gapapp
+    image: gapapp-v1:latest
+    container_name: gapapp-v1
     environment:
       - TZ=Europe/Rome
-      - MODULE_NAME=gap.wsgi
+      - MODULE_NAME=gap.asgi
       - VARIABLE_NAME=application
+      - PORT=8000
     volumes:
-      - gapapp:/app
-      - static:/app/static
-      - ${DB_PATH}:/app/gap_db.sqlite3 # use a .env file with DB_PATH=absolute path to db file
+      - gapapp_v1:/app
     ports:
-      - "8000:80"
+      - "8080:8000"
     restart: unless-stopped

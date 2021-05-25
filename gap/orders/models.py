@@ -114,7 +114,7 @@ class Order(ValuesMixin, TimeStampedModel):
         return "COC: {self.coc} | {self.orderdate}".format(self=self)
 
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.pk})
+        return reverse('order-detail', kwargs={'pk': self.pk})
     
     def natural_key(self):
         return (self.coc, self.orderdate)

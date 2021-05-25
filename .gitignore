@@ -47,6 +47,7 @@ migrations
 fixtures
 static
 .env
+users.json
 
 # Databases
 *.sqlite3
