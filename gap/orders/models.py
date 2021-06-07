@@ -82,7 +82,7 @@ class Company(ValuesMixin, TimeStampedModel):
 
 class OrderManager(models.Manager):
     def get_by_natural_key(self, coc, orderdate):
-        return self.get(coc, orderdate)
+        return self.get(coc=coc, orderdate=orderdate)
 
 
 class Order(ValuesMixin, TimeStampedModel):
