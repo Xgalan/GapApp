@@ -1,7 +1,6 @@
 FROM tiangolo/uvicorn-gunicorn:python3.8
 
 COPY ./gap /app
-ADD ./assets /app/assets
 COPY setup.py setup.py
 RUN /bin/bash -c 'rm /app/main.py'
 RUN /bin/bash -c 'pip install --editable .'
