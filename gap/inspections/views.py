@@ -76,7 +76,6 @@ class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateVie
             return reverse_lazy('lot_list')
 
 
-
 class DetailView(LoginRequiredMixin, generic.DetailView):
     queryset = Lot.objects.prefetch_related('partnumbers').all()
 

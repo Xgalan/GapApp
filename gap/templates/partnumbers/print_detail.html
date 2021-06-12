@@ -4,7 +4,7 @@
     <p>
         <div class="btn-group hidden-print" role="group">
             {% for y in dates %}
-                <a href="/partnumbers/print/{{object.id}}/{{ y }}" role="button" class="btn btn-default">
+                <a href="{% url 'partnumber-print-detail' object.id %}?year={{ y }}" role="button" class="btn btn-default">
                     {{ y }}</a>
             {% endfor %}
         </div>

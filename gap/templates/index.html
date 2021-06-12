@@ -34,9 +34,9 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         {% if user.is_authenticated %}                        
-                        <form id="frmSearch" class="navbar-form navbar-left" method="GET" role="search">
+                        <form id="frmSearch" class="navbar-form navbar-left" method="get" role="search">
                             <div class="form-group">
-                                    <select name="search" class="form-control" style="width: 100%;"
+                                    <select id="sel-partnumber-search" class="form-control" style="width: 100%;"
                                         data-ajax--url="{% url 'partnumber-list' %}"></select>
                             </div>
                             <button type="submit" class="btn btn-default">

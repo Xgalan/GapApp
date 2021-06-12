@@ -2,9 +2,9 @@ from django.urls import reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
-from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.permissions import IsAuthenticated
@@ -55,10 +55,17 @@ class PickingViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class CreateView(LoginRequiredMixin, generic.edit.CreateView):
+class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateView):
     model = Picking
     form_class = PickingForm
     template_name_suffix = '_create_form'
+    success_message = "Movimento %(picking)s creato correttamente"
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            picking=str(self.object),
+        )
 
     def form_invalid(self, form):
         errors = form.errors.as_data()['__all__'][0]
@@ -86,10 +93,17 @@ class CreateView(LoginRequiredMixin, generic.edit.CreateView):
         return kwargs
 
 
-class UpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+class UpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.UpdateView):
     model = Picking
     form_class = PickingForm
     template_name_suffix = '_update_form'
+    success_message = "Movimento %(picking)s aggiornato correttamente"
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            picking=str(self.object),
+        )
 
     def get_object(self):
         id_ = self.kwargs.get("pk")

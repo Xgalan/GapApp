@@ -51,7 +51,7 @@
             <tbody>
                 {% for p in object.picking_set.all %}
                 <tr>
-                    <td><a href="{% url 'partnumber_detail' p.partnumber.id %}">
+                    <td><a href="{% url 'partnumber-print-detail' p.partnumber.id %}">
                         {{ p.partnumber.sku }}</a></td>
                     <td>{{ p.partnumber.category }}</td>
                     <td>{{ p.picking_date|date }}</td>
