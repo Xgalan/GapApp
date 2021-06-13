@@ -1,4 +1,4 @@
-FROM tiangolo/uvicorn-gunicorn:python3.8
+FROM tiangolo/uvicorn-gunicorn:python3.8-slim
 
 COPY ./gap /app
 COPY setup.py setup.py
