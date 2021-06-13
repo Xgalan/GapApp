@@ -37,7 +37,6 @@ schema_url_patterns = [
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('pickings/', include('pickings.urls')),
     path('partnumbers/', include('partnumbers.urls')),
     path('inspections/', include('inspections.urls')),

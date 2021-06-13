@@ -29,7 +29,7 @@
                 <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
                 <td>{{ p.sku }}
                     <div class="btn-group btn-group-xs pull-right" role="group">
-                        <a class="btn btn-default" href="{% url 'partnumber-print-detail' p.id %}" role="button">
+                        <a class="btn btn-default" href="{% url 'partnumber-detail' p.id %}" role="button">
                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                         </a>
                         {% if user.is_staff %}

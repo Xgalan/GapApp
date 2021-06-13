@@ -32,6 +32,13 @@ class PartnumberViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields  = ['sku']
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.accepted_renderer.format == 'html':
+            return Response({'object': instance}, template_name='partnumbers/partnumber_api_detail.html')
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     @action(
         detail=False,
         methods=['get'],

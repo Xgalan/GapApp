@@ -22,7 +22,7 @@
             {% for q in o.values %}
                 {% for p in q %}
                 <tr>
-                    <td><a href="{% url 'partnumber_update' p.partnumber %}">
+                    <td><a href="{% url 'partnumber-detail' p.partnumber %}">
                     {{ p.partnumber__sku }}</a></td>
                     <td>{{ p.total }}</td>
                 </tr>

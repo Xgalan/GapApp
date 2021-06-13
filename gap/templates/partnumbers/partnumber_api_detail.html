@@ -1,0 +1,91 @@
+{% extends "partnumbers/base_form.html" %}
+{% block title %}GAP - Aggiorna {{ object }}{% endblock %}
+{% block form %}
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Dettaglio {{ object.sku }}</h3></div>
+        <!-- Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Codice</th>
+                    <th>Descrizione</th>
+                    <th>Unità stock</th>
+                    <th>P.M.U. (g)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ object.db_nr }}</td>
+                    <td>{{ object.sku }}</td>
+                    <td>{{ object.description }}</td>
+                    <td>{{ object.get_unit_display }}</td>
+                    <td>{{ object.pmu }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="btn-group" role="group" aria-label="...">
+                <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-default btn-sm">
+                    Aggiungi movimento...</a>
+                <button id="getOrders" class="btn btn-default btn-sm">
+                    Ordini Cliente</button>
+                </div>
+            </li>
+        </ul>
+        <div class="panel-footer">{{ object.category }} | Modificato:
+        {{ object.modified|date }}
+        </div>
+    </div>
+
+    <table id="tableOrders" class="table hidden">
+        <thead>
+            <tr>
+                <th>COC nr.</th>
+                <th>Cliente</th>
+                <th>Stato di produzione</th>
+                <th>Quantità</th>
+                <th>Data di consegna</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyOrders"></tbody>
+    </table>
+</div>
+{% endblock %}
+{% block page_script %}
+<script>
+$(function() {
+    var getOrders = $( "#getOrders" );
+    var htmlStr = '';
+    const notFoundMsg = 'Nessun ordine trovato.'
+
+    getOrders.click(function( event ) {
+        event.preventDefault();
+
+        $.getJSON("{% url 'order-bypartnumber' object.id %}").done(function( data ) {
+            if (arrayIsEmpty(data)) {
+                alert(notFoundMsg);
+            } else {
+                data.forEach(function(el) {
+                    const shipdate = new Date(el.shipdate).toLocaleDateString();
+
+                    htmlStr += html`
+                        <tr>
+                            <td><a href="/api/orders/${el.coc}">${el.coc_display}</a></td>
+                            <td>${el.customer}</td>
+                            <td>${el.status_display}</td>
+                            <td>${el.quantity}</td>
+                            <td>${shipdate}</td>
+                        </tr>`
+                });
+
+                $("#tbodyOrders").append(htmlStr);
+                $("#tableOrders").removeClass("hidden");
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
