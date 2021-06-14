@@ -4,6 +4,7 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.urls import reverse
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -103,6 +104,9 @@ class UpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Partnumber
     form_class = PartnumberForm
     template_name_suffix = '_update_form'
+
+    def get_success_url(self):
+        return reverse('partnumber-detail', kwargs={"pk": self.kwargs.get("pk")})
 
     def get_object(self):
         id_ = self.kwargs.get("pk")

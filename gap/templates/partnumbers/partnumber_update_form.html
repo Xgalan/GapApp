@@ -1,27 +1,12 @@
-{% extends "partnumbers/base_form.html" %}
-{% block title %}GAP - Aggiorna {{ object }}{% endblock %}
-{% block form %}
-    <div id="frmUpdate" class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Modifica codice {{ object.sku }}</h3></div>
-        <div class="panel-body">
-            <form action="{% url 'partnumber_update' object.id %}" method="POST">{% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    <span class="help-block">
-                        {{ field.errors|escape }}
-                    </span>
-                </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary">Registra</button>
-            </form>
-        </div>
-        <div class="panel-footer">{{ object.category }} | Modificato:
-            {{ object.modified|date }}
-        </div>
+<form id="frmUpdate" action="{% url 'partnumber_update' object.id %}" method="POST">{% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        <span class="help-block">
+            {{ field.errors|escape }}
+        </span>
     </div>
-
-{% endblock %}
-{% block page_script %}{% endblock %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Registra</button>
+</form>

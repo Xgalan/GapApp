@@ -9,9 +9,26 @@
                 Codici</a>
             {% if user.is_staff %}
                 {% if object %}
-                <a href="{% url 'partnumber_update' object.id %}" class="btn btn-warning">
-                    Modifica
-                </a>
+                <button type="button" class="btn btn-warning" 
+                    data-form-url="{% url 'partnumber_update' object.id %}" 
+                    data-toggle="modal" 
+                    data-target="#updatePartnumber">Modifica</button>
+                <div class="modal fade" id="updatePartnumber" tabindex="-1" role="dialog" aria-labelledby="updatePartnumberLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="updatePartnumberLabel">Modifica codice: {{ object.sku }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <!-- form -->
+                            </div>
+                            <div class="modal-footer">
+                                {{ object.category }} | Modificato: {{ object.modified|date }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
             {% endif %}
         </div>
