@@ -40,50 +40,69 @@
         </div>
     </div>
 
-    <table id="tableOrders" class="table hidden">
-        <thead>
-            <tr>
-                <th>COC nr.</th>
-                <th>Cliente</th>
-                <th>Stato di produzione</th>
-                <th>Quantità</th>
-                <th>Data di consegna</th>
-            </tr>
-        </thead>
-        <tbody id="tbodyOrders"></tbody>
-    </table>
+    <div id="tableOrders" class="panel panel-default"></div>
+
+    <template id="ordersTable">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>COC nr.</th>
+                    <th>Cliente</th>
+                    <th>Stato di produzione</th>
+                    <th>Quantità</th>
+                    <th>Data di consegna</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </template>
+
+    <template id="orderRow">
+        <tr>
+            <td><a href="#"></a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </template>
 </div>
 {% endblock %}
 {% block page_script %}
 <script>
 $(function() {
     var getOrders = $( "#getOrders" );
-    var htmlStr = '';
     const notFoundMsg = 'Nessun ordine trovato.'
+    const table = document.getElementById("ordersTable");
+    const row = document.getElementById('orderRow');
 
     getOrders.click(function( event ) {
         event.preventDefault();
+
+        t = table.content.firstElementChild.cloneNode(true);
 
         $.getJSON("{% url 'order-bypartnumber' object.id %}").done(function( data ) {
             if (arrayIsEmpty(data)) {
                 alert(notFoundMsg);
             } else {
+                tbody = t.querySelector("tbody");
+
                 data.forEach(function(el) {
                     const shipdate = new Date(el.shipdate).toLocaleDateString();
 
-                    htmlStr += html`
-                        <tr>
-                            <td><a href="/api/orders/${el.coc}">${el.coc_display}</a></td>
-                            <td>${el.customer}</td>
-                            <td>${el.status_display}</td>
-                            <td>${el.quantity}</td>
-                            <td>${shipdate}</td>
-                        </tr>`
-                });
+                    r = row.content.firstElementChild.cloneNode(true);
+                    r.querySelector("a").textContent = el.coc_display;
+                    r.querySelector("a").href = "/api/orders/" + el.coc;
+                    r.cells[1].textContent = el.customer;
+                    r.cells[2].textContent = el.status_display;
+                    r.cells[3].textContent = el.quantity;
+                    r.cells[4].textContent = shipdate;
 
-                $("#tbodyOrders").append(htmlStr);
-                $("#tableOrders").removeClass("hidden");
+                    tbody.appendChild(r);
+                });
             }
+
+            $( '#tableOrders' ).append(t);
         });
     });
 
