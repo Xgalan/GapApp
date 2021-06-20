@@ -1,37 +1,24 @@
 {% extends 'index.html' %}
-{% block title %}Login{% endblock %}
+{% load static %}
+{% block title %}GAP - Login{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% endblock style %}
 {% block generic %}
-<div class="container">
+<main role="main" class="container">
     <div class="row">
-        <div class="col-xs-12 col-md-offset-3 col-md-6">
-            <div class="row"><div class="col-xs-12"><img src="/static/images/logo_w.png" alt="logo" style="padding-bottom:15px"></div></div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <h2>Login</h2>
-                    <form role="form" id="form-login" method="post" action="{% url 'login' %}">{% csrf_token %}
-                        <div class="form-group">
-                            {{ form.username.label_tag }}
-                            <input id="id_username" class="form-control" type="text" name="username" maxlength="254">
-                            <p class="help-block">Inserisci il nome utente.</p>
-                        </div>
-                        <div class="form-group">
-                            {{ form.password.label_tag }}
-                            <input id="id_password" class="form-control" type="password" name="password">
-                            <p class="help-block">Inserisci la password.</p>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" value="login" class="btn btn-success">Login</button>
-                            <button type="reset" value="login" class="btn btn-default">Reset</button>
-                        </div>
-                        <input type="hidden" name="next" value="{{ next }}" />
-                    </form>
-                    {% if form.errors %}
-                        <p>Nome utente o password errati.</p>
-                    {% endif %}
-                </div>
-                <div class="panel-footer">#TODO use django-environ</div>
-            </div>
-        </div>
+        <form role="form" id="form-login" class="form-signin" method="post" action="{% url 'login' %}">{% csrf_token %}
+            <img class="mb-4" src="{% static 'images/logo_w.png' %}" alt="" width="148" height="96">
+            <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+            <label for="id_username" class="sr-only">Nome utente</label>
+            <input name="username" type="text" id="id_username" class="form-control" placeholder="Nome utente" required autofocus>
+            <label for="id_password" class="sr-only">Password</label>
+            <input name="password" type="password" id="id_password" class="form-control" placeholder="Password" required>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            {% if form.errors %}
+            <p class="mt-5 mb-3 text-muted">Nome utente o password errati.</p>
+            {% endif %}
+        </form>
     </div>
-</div>
+</main>
 {% endblock generic %}

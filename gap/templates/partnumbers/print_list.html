@@ -1,12 +1,12 @@
 {% extends "index.html" %}
 {% block title %}GAP - Lista Codici{% endblock %}
 {% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
-<h3>Lista codici per stampa</h3>
-<hr>
+<div class="row">
+<div class="col">
+<h3>Lista codici per contapezzi</h3>
 {% if partnumbers_list %}
 <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered table-condensed">
+    <table class="table table-hover table-bordered table-sm">
         <thead>
             <tr>
                 <th>#</th>
@@ -32,8 +32,9 @@
 {% else %}
 <p>Nessun codice presente.</p>
 {% endif %}
-    <div class="well well-sm">
+    <p>
         Nr. totale codici: {{ partnumbers_list.count }}
-    </div>
+    </p>
+</div>
 </div>
 {% endblock %}

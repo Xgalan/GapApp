@@ -1,11 +1,9 @@
 {% extends "partnumbers/base_form.html" %}
 {% block title %}GAP - Crea nuovo codice{% endblock %}
 {% block form %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Crea nuovo codice</h3>
-    </div>
-    <div class="panel-body">
+<div class="card mb-3">
+    <h5 class="card-header">Crea nuovo codice</h5>
+    <div class="card-body">
         <form method="POST">{% csrf_token %}
             {% for field in form %}
             <div class="form-group {% if field.errors %}has-error{% endif %}">
@@ -16,10 +14,11 @@
                 </span>
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-default">Registra</button>
+            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>
+                Registra</button>
         </form>
     </div>
-    <div class="panel-footer">
+    <div class="card-footer">
         Numero da usare per inserimento in database contapezzi: <b>{{ new_db_nr }}</b><br>
         Numeri liberi:
         {% for n in db_free_nr %}

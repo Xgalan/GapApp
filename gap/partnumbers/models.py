@@ -90,7 +90,7 @@ class Partnumber(TimeStampedModel):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('partnumber_update', args=((self.id,)))
+        return reverse('partnumber-detail', args=((self.id,)))
 
     @staticmethod
     def autocomplete_search_fields():

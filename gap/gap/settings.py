@@ -13,6 +13,7 @@ from pathlib import Path
 
 import environ
 
+from gap.third_party_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -147,10 +148,3 @@ ASSETS_DIR = BASE_DIR.resolve() / 'assets'
 STATICFILES_DIRS = (
     ASSETS_DIR,
 )
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    )
-}

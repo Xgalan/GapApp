@@ -11,7 +11,7 @@ $(function() {
     selectSearch.select2({
         placeholder: 'Cerca codice...',
         minimumInputLength: 2,
-        theme: "bootstrap",
+        theme: "bootstrap4",
         ajax: {
             dataType: 'json',
             data: function (params) {

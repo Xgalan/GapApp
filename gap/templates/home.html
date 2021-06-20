@@ -1,18 +1,18 @@
 {% extends "index.html" %}
 {% block title %}GAP - Gestione passaggio sottoassiemi e componenti in area prelievo{% endblock %}
 {% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
+
     <div class="jumbotron">
-        <h1>GAP</h1>
-        <p>Gestione passaggio sottoassiemi e componenti in area prelievo</p>
+        <h1 class="display-4">GAP</h1>
+        <p class="lead">Gestione passaggio sottoassiemi e componenti in area prelievo</p>
         {% if user.is_authenticated %}
-        <p><a class="btn btn-primary btn-lg" href="{% url 'picking-list' %}" role="button">Movimenti Recenti...</a></p>
+        <a class="btn btn-primary btn-lg" href="{% url 'picking-list' %}" role="button">Movimenti Recenti...</a>
         {% if user.is_staff %}
-        <p><a class="btn btn-warning btn-lg" href="{% url 'admin:index' %}">Admin</a></p>
+        <hr class="my-4">
+        <a class="btn btn-warning btn-lg" href="{% url 'admin:index' %}">Admin</a>
         {% endif %}
         {% else %}
-        <p><a class="btn btn-primary btn-lg" href="{% url 'login' %}">Login</a></p>
+        <a class="btn btn-primary btn-lg" href="{% url 'login' %}">Login</a>
         {% endif %}
     </div>
-</div>
 {% endblock %}

@@ -1,48 +1,46 @@
 {% extends "partnumbers/base_form.html" %}
 {% block title %}GAP - Dettaglio {{ object }}{% endblock %}
 {% block form %}
-    <p>
-        <div class="btn-group hidden-print" role="group">
+        <div class="btn-group d-print-none mb-3 float-right" role="group">
             {% for y in dates %}
-                <a href="{% url 'partnumber-print-detail' object.id %}?year={{ y }}" role="button" class="btn btn-default">
+                <a href="{% url 'partnumber-print-detail' object.id %}?year={{ y }}" role="button"
+                 class="btn btn-outline-secondary">
                     {{ y }}</a>
             {% endfor %}
         </div>
-    </p>
-    <!-- Table -->
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <td class="cellreport"><h3><b>ITALCLEM S.r.l.</b></h3></td>
-                <td style="text-align: center;"><h4>
+            <tr style="text-align: center;">
+                <td class="align-middle" style="background-color: lightgray;"><h3><b>ITALCLEM S.r.l.</b></h3></td>
+                <td class="align-middle"><h4>
                     Gestione passaggio componenti e <br>sottoassiemi in area prelievo
                 </h4></td>
-                <td style="text-align: center;"><h3><b>GAP</b></h3></td>
+                <td class="align-middle"><h3><b>GAP</b></h3></td>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>CODICE:<br>
-                    <span class="pull-right"><h4>{{ object.sku }}</h4></span>
+                    <span class="float-right"><h4>{{ object.sku }}</h4></span>
                 </td>
                 <td colspan="2">DESCRIZIONE:<br>
-                    <span class="pull-right">
+                    <span class="float-right">
                         {{ object.description }}
-                    </span><br><span class="pull-right">
+                    </span><br><span class="float-right">
                         {{ object.category }}
                     </span></td>
             </tr>
             <tr>
                 <td>Unità stock:<br>
-                    <span class="pull-right">
+                    <span class="float-right">
                         {{ object.get_unit_display }}
                     </span></td>
                 <td>P.M.U. (g):<br>
-                    <span class="pull-right">
+                    <span class="float-right">
                         {{ object.pmu }}
                     </span></td>
                 <td>Nr. DB contapezzi:<br>
-                    <span class="pull-right">{{ object.db_nr }}</span></td>
+                    <span class="float-right">{{ object.db_nr }}</span></td>
             </tr>
         </tbody>
     </table>
@@ -61,9 +59,9 @@
             <tr>
                 <td>{% for se in storages.se %}
                     <ul class="list-inline">
-                        <li>{{ forloop.counter }}.</li>
+                        <li class="list-inline-item">{{ forloop.counter }}.</li>
                         {% for s in se %}
-                        <li>{{ s }}</li>
+                        <li class="list-inline-item">{{ s }}</li>
                         {% endfor %}
                     </ul>
                     {% empty %}
@@ -72,9 +70,9 @@
                 </td>
                 <td>{% for pg in storages.pg %}
                     <ul class="list-inline">
-                        <li>{{ forloop.counter }}.</li>
+                        <li class="list-inline-item">{{ forloop.counter }}.</li>
                         {% for p in pg %}
-                        <li>{{ p }}</li>
+                        <li class="list-inline-item">{{ p }}</li>
                         {% endfor %}
                     </ul>
                     {% empty %}
@@ -87,16 +85,16 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th colspan="4">Trasferimenti da magazzino ad area prelievo
-                <a class="btn btn-default btn-sm hidden-print pull-right" href="{% url 'picking_create_pn' object.id %}">
-                    <span class="glyphicon glyphicon-plus"  aria-hidden="true"></span></a>
+                <th class="align-middle" colspan="4">Trasferimenti da magazzino ad area prelievo
+                <a class="btn btn-secondary btn-sm d-print-none float-right" href="{% url 'picking_create_pn' object.id %}">
+                    <i class="bi bi-plus-lg"></i></a>
                 </th>
             </tr>
             <tr>
-                <th>#</th>
-                <th>Nr. Lotto</th>
-                <th>Data immissione in area prelievo</th>
-                <th>Operatore</th>
+                <th scope="col">#</th>
+                <th scope="col">Nr. Lotto</th>
+                <th scope="col">Data immissione in area prelievo</th>
+                <th scope="col">Operatore</th>
             </tr>
         </thead>
         <tbody>
@@ -116,24 +114,4 @@
             {% endif %}
         </tbody>
     </table>
-{% endblock %}
-{% block page_script %}
-<script>
-$(function() {
-    $('#updatePartnumber').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var formUrl = button.data('form-url'); // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this);
-        $.get(formUrl, function( ev ){
-            console.log(ev);
-        }).done(function( form ) {
-            modal.find('.modal-body').html(form);
-        }).fail(function( err ) {
-            console.log(err);
-        });
-    });
-});
-</script>
-{% endblock %}
+{% endblock form %}

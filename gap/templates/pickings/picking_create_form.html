@@ -1,32 +1,31 @@
 {% extends "base_form.html" %}
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
 {% block form %}
-<p>
-    <a href="{% url 'picking-list' %}" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-        Movimenti</a>
+    <p>
+        <a href="{% url 'picking-list' %}" class="btn btn-outline-secondary"> 
+            <i class="bi bi-arrow-left"></i>
+            Movimenti</a>
+    </p>
     {% if view.kwargs.pn_id %}
-    <a href="{% url 'lot_create_pn' view.kwargs.pn_id %}" class="btn btn-default btn-sm">
+    <a href="{% url 'lot_create_pn' view.kwargs.pn_id %}" class="btn btn-outline-primary">
         Aggiungi lotto...
     </a>
     {% endif %}
-</p>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Inserisci nuovo movimento</h3>
-    </div>
-    <div class="panel-body">
+<div class="card mt-3">
+    <h5 class="card-header">Inserisci nuovo movimento</h5>
+    <div class="card-body">
         <form method="POST">{% csrf_token %}
             {% for field in form %}
             <div class="form-group {% if field.errors %}has-error{% endif %}">
                 {{ field.label_tag }}
                 {{ field }}
-                <span class="help-block">
+                <small id="" class="form-text text-muted">
                     {{ field.errors|escape }}
-                </span>
+                </small>
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-default">Registra</button>
+            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>
+                Registra</button>
         </form>
     </div>
 </div>
@@ -46,7 +45,7 @@ $(function() {
     partnumberFormSearch.select2({
         placeholder: "Cerca codice...",
         minimumInputLength: 2,
-        theme: "bootstrap",
+        theme: "bootstrap4",
         ajax: {
             url: "{% url 'partnumber-list' %}",
             dataType: 'json',
@@ -72,7 +71,7 @@ $(function() {
     lotFormSearch.select2({
         placeholder: "Cerca lotto...",
         minimumInputLength: 1,
-        theme: "bootstrap",
+        theme: "bootstrap4",
         ajax: {
             url: "{% url 'lot_list' %}",
             dataType: 'json',

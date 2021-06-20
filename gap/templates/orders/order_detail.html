@@ -1,8 +1,8 @@
 {% extends "index.html" %}
 {% block title %}GAP - Dettaglio COC {{ object.coc }}{% endblock %}
 {% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
-    <!-- Table -->
+<div class="row">
+<div class="col">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -14,15 +14,15 @@
         <tbody>
             <tr>
                 <td>NOME CLIENTE:<br>
-                    <span class="pull-right"><h4>{{ object.customer }}</h4></span>
+                    <span class="float-right"><h4>{{ object.customer }}</h4></span>
                 </td>
                 <td>Nr. Progressivo e data ordine:<br>
-                    <span class="pull-right">
+                    <span class="float-right">
                         <h5><b><a href="{% url 'admin:orders_order_change' object.id %}">
                             {{ object.coc }} - {{ object.orderdate|date }}</a></b></h5>
                     </span></td>
                 <td>Data di consegna:<br>
-                    <span class="pull-right">{{ object.shipdate|date }}</span></td>
+                    <span class="float-right">{{ object.shipdate|date }}</span></td>
             </tr>
         </tbody>
     </table>
@@ -46,5 +46,6 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 </div>
 {% endblock %}

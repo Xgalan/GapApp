@@ -1,16 +1,13 @@
 {% extends "index.html" %}
 {% block title %}GAP - Prodotto Finito Richiesto{% endblock %}
 {% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
-    <h3>Totale Prodotto Finito Richiesto <small>Suddiviso per settimana</small></h3>
-<hr>
+<div class="row">
+<div class="col">
+<h3>Totale Prodotto Finito Richiesto <small>Suddiviso per settimana</small></h3>
 {% if results %}
 {% for o in results %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">S{% for k in o.keys %}{{ k }}{% endfor %}
-            <small>Prodotto finito richiesto</small>
-        </h3></div>
+<div class="card mt-3">
+    <h5 class="card-header">S{% for k in o.keys %}{{ k }}{% endfor %}<small> Prodotto finito richiesto</small></h5>
     <table class="table">
         <thead>
             <tr>
@@ -22,8 +19,7 @@
             {% for q in o.values %}
                 {% for p in q %}
                 <tr>
-                    <td><a href="{% url 'partnumber-detail' p.partnumber %}">
-                    {{ p.partnumber__sku }}</a></td>
+                    <td><a href="{% url 'partnumber-detail' p.partnumber %}">{{ p.partnumber__sku }}</a></td>
                     <td>{{ p.total }}</td>
                 </tr>
                 {% endfor %}
@@ -35,6 +31,7 @@
 {% else %}
 <p>Nessun ordine cliente registrato.</p>
 {% endif %}
+</div>
 </div>
 {% endblock %}
 {% block page_script %}

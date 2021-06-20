@@ -1,17 +1,15 @@
 {% extends "index.html" %}
 {% block title %}GAP - Lista Codici{% endblock %}
 {% block content %}
-<div class="col-xs-12 col-md-10 col-md-offset-1">
+<div class="row">
+<div class="col">
 <h3>Lista codici</h3>
-<hr>
-<a class="btn btn-default hidden-print" href="{% url 'partnumber_create' %}" role="button">
-    Aggiungi
-    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-</a>
+<a class="btn btn-secondary" href="{% url 'partnumber_create' %}" role="button">
+    <i class="bi bi-plus-lg"></i> Aggiungi</a>
 {% if results %}
 {% include "pagination.html" %}
 <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered">
+    <table class="table table-hover table-bordered table-sm">
         <caption>Lista codici</caption>
         <thead>
             <tr>
@@ -27,12 +25,11 @@
         {% for p in results %}
             <tr>
                 <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
-                <td>{{ p.sku }}
-                    <div class="btn-group btn-group-xs pull-right" role="group">
-                        <a class="btn btn-default" href="{% url 'partnumber-detail' p.id %}" role="button">
-                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                <td>
+                        <a class="btn btn-outline-secondary btn-sm"
+                            href="{% url 'partnumber-detail' p.id %}" role="button">
+                            {{ p.sku }}
                         </a>
-                    </div>
                 </td>
                 <td>{{ p.description }}</td>
                 <td>{{ p.get_unit_display }}</td>
@@ -46,8 +43,9 @@
 {% else %}
 <p>Nessun codice presente.</p>
 {% endif %}
-    <div class="well well-sm">
+    <p>
         Totale Codici: {{ count }}
-    </div>
+    </p>
+</div>
 </div>
 {% endblock %}

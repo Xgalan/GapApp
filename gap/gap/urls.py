@@ -23,6 +23,7 @@ from rest_framework.schemas import get_schema_view
 from partnumbers.views import PartnumberViewSet
 from pickings.views import PickingViewSet
 from orders.views import OrderViewSet
+from ext.views import delivers_by_partnumber
 
 
 
@@ -40,6 +41,7 @@ urlpatterns = [
     path('pickings/', include('pickings.urls')),
     path('partnumbers/', include('partnumbers.urls')),
     path('inspections/', include('inspections.urls')),
+    path('delivers/', delivers_by_partnumber),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('openapi', get_schema_view(

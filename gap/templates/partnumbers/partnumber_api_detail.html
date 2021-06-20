@@ -1,10 +1,8 @@
 {% extends "partnumbers/base_form.html" %}
 {% block title %}GAP - Aggiorna {{ object }}{% endblock %}
 {% block form %}
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading"><h3 class="panel-title">Dettaglio {{ object.sku }}</h3></div>
-        <!-- Table -->
+    <div class="card mb-3">
+        <h5 class="card-header">Dettaglio {{ object.sku }}</h5>
         <table class="table">
             <thead>
                 <tr>
@@ -28,22 +26,20 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <div class="btn-group" role="group" aria-label="...">
-                <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-default btn-sm">
+                <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-secondary btn-sm">
                     Aggiungi movimento...</a>
-                <button id="getOrders" class="btn btn-default btn-sm">
+                <button id="getOrders" class="btn btn-primary btn-sm">
                     Ordini Cliente</button>
                 </div>
             </li>
         </ul>
-        <div class="panel-footer">{{ object.category }} | Modificato:
+        <div class="card-footer">{{ object.category }} | Modificato:
         {{ object.modified|date }}
         </div>
-    </div>
-
-    <div id="tableOrders" class="panel panel-default"></div>
+</div>
 
     <template id="ordersTable">
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>COC nr.</th>
@@ -102,7 +98,7 @@ $(function() {
                 });
             }
 
-            $( '#tableOrders' ).append(t);
+            $( '.card' ).after(t);
         });
     });
 
