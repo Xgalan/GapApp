@@ -1,9 +1,8 @@
 from datetime import date, datetime
 from calendar import monthrange
-from operator import ge
 
 from django.db import models
-from django.db.models import Q, Sum, F, Prefetch
+from django.db.models import Q, Sum
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.urls import reverse
@@ -13,6 +12,15 @@ from django_extensions.db.models import TimeStampedModel
 from core.mixins import ValuesMixin
 from partnumbers.models import Partnumber
 
+
+
+def orderitem_status(status):
+    status_choice = {
+            'planned': Q(status='planned'),
+            'released': Q(status='released'),
+            'open': Q(status='planned') | Q(status='released')
+        }
+    return status_choice[status]
 
 
 class RequestedManager(models.Manager):
@@ -149,10 +157,10 @@ class OrderitemsFilter(models.Manager):
 
     def shipdate_in_isoweek(self, isoweek):
         return self.filter(coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id'))
-    
-    def shipdate_in_isoweek_open(self, isoweek):
+
+    def shipdate_in_isoweek_status(self, isoweek, status):
         return self.select_related('coc').filter(
-            Q(status='planned') | Q(status='released'),
+            orderitem_status(status),
             coc__in=Order.requested.shipdate_in_isoweek(isoweek).values('id')
         )
 
@@ -165,7 +173,7 @@ class OrderitemsGroupBy(models.Manager):
     """ Various aggregates """
 
     def total_status_open(self):
-        total = Sum('quantity', filter=Q(status='planned') | Q(status='released'))
+        total = Sum('quantity', filter=orderitem_status('open'))
         return self.select_related(
             'partnumber'
         ).values(
@@ -175,18 +183,18 @@ class OrderitemsGroupBy(models.Manager):
         ).annotate(
             total=total
         )
-
-    def isoweek_open(self):
-        """ Group items in order by isoweek """
+    
+    def isoweek_status(self, status):
+        """ Group items in order by isoweek, status choice """
 
         dates = self.select_related('coc').filter(
-            Q(status='planned') | Q(status='released')
+            orderitem_status(status)
         ).dates('coc__shipdate', 'week', order='DESC')
         weeks = [d.isocalendar()[:2] for d in dates]
         return [
             {
-                "{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_open(
-                    w[1] # ISO week
+                "{w[1]} - {w[0]}".format(w=w): Orderitem.filterby.shipdate_in_isoweek_status(
+                    w[1], status # ISO week, status
                 ).values(
                     'partnumber',
                     'partnumber__sku',

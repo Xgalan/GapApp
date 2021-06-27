@@ -26,12 +26,11 @@
                 <tbody>
                 {% for picking in results %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ picking.partnumber_display }}
-                        <a class="btn btn-outline-secondary btn-sm float-right d-print-none" href="{% url 'picking_update' picking.id %}" role="button">
-                            <i class="bi bi-pencil"></i>
-                        </a>
+                        <td>
+                            <a class="btn btn-outline-secondary btn-sm d-print-none" href="{% url 'picking_update' picking.id %}" role="button">
+                                <i class="bi bi-pencil"></i></a>
                         </td>
+                        <td>{{ picking.partnumber_display }}</td>
                         <td><a href="{% url 'lot_detail' picking.lot.id %}">{{ picking.lot.lot_display }}</a></td>
                         <td>{{ picking.picking_date_display }}</td>
                         <td>{{ picking.picking_operator.first_name }}</td>

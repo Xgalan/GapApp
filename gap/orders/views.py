@@ -1,3 +1,4 @@
+from os import stat
 from django.db.models import Q
 
 from rest_framework.response import Response
@@ -40,7 +41,11 @@ class OrderViewSet(ModelViewSet):
         methods=['get']
     )
     def requested(self, request):
-        q = Orderitem.groupby.isoweek_open()
+        status = self.request.query_params.get("status")
+        if status:
+            q = Orderitem.groupby.isoweek_status(status)
+        else:
+            q = Orderitem.groupby.isoweek_status('open')
         if request.accepted_renderer.format == 'html':
             return Response({'results': q}, template_name='orders/orderitem_list.html')
         return Response(q)

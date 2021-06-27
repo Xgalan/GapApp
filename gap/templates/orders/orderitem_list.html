@@ -4,29 +4,35 @@
 <div class="row">
 <div class="col">
 <h3>Totale Prodotto Finito Richiesto <small>Suddiviso per settimana</small></h3>
+<div class="btn-group d-print-none mt-3 mb-3" role="group">
+    <a href="{% url 'order-requested'%}?status=planned" role="button"
+        class="btn btn-outline-secondary">In programma</a>
+    <a href="{% url 'order-requested'%}?status=released" role="button"
+        class="btn btn-outline-secondary">In produzione</a>
+    <a href="{% url 'order-requested'%}?status=open" role="button"
+        class="btn btn-outline-secondary">Inevaso</a>
+</div>
 {% if results %}
 {% for o in results %}
-<div class="card mt-3">
-    <h5 class="card-header">S{% for k in o.keys %}{{ k }}{% endfor %}<small> Prodotto finito richiesto</small></h5>
-    <table class="table">
-        <thead>
+<h5 class="text-center mt-4">S{% for k in o.keys %}{{ k }}{% endfor %}<small> Prodotto finito richiesto</small></h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Codice</th>
+            <th>Quantità totale</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for q in o.values %}
+            {% for p in q %}
             <tr>
-                <th>Codice</th>
-                <th>Quantità totale</th>
+                <td><a href="{% url 'partnumber-detail' p.partnumber %}">{{ p.partnumber__sku }}</a></td>
+                <td>{{ p.total }}</td>
             </tr>
-        </thead>
-        <tbody>
-            {% for q in o.values %}
-                {% for p in q %}
-                <tr>
-                    <td><a href="{% url 'partnumber-detail' p.partnumber %}">{{ p.partnumber__sku }}</a></td>
-                    <td>{{ p.total }}</td>
-                </tr>
-                {% endfor %}
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        {% endfor %}
+    </tbody>
+</table>
 {% endfor %}
 {% else %}
 <p>Nessun ordine cliente registrato.</p>
