@@ -1,4 +1,5 @@
 {% extends "index.html" %}
+{% load static %}
 {% block title %}GAP - Prodotto Finito Richiesto{% endblock %}
 {% block content %}
 <div class="row">
@@ -13,6 +14,12 @@
         class="btn btn-outline-secondary">Inevaso</a>
 </div>
 {% if results %}
+<div class="input-group mb-3 w-50">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Cerca:</span>
+    </div>
+    <input type="search" id="partnumber-search" name="partnumber-search" class="form-control" placeholder="Codice ..." aria-label="Partnumber" aria-describedby="basic-addon1">
+</div>
 {% for o in results %}
 <h5 class="text-center mt-4">S{% for k in o.keys %}{{ k }}{% endfor %}<small> Prodotto finito richiesto</small></h5>
 <table class="table table-bordered">
@@ -25,7 +32,7 @@
     <tbody>
         {% for q in o.values %}
             {% for p in q %}
-            <tr>
+            <tr data-partnumber="{{ p.partnumber__sku }}">
                 <td><a href="{% url 'partnumber-detail' p.partnumber %}">{{ p.partnumber__sku }}</a></td>
                 <td>{{ p.total }}</td>
             </tr>
@@ -35,10 +42,11 @@
 </table>
 {% endfor %}
 {% else %}
-<p>Nessun ordine cliente registrato.</p>
+<p class="lead">Nessun ordine cliente registrato.</p>
 {% endif %}
 </div>
 </div>
 {% endblock %}
 {% block page_script %}
+<script src="{% static 'js/requested.js' %}"></script>
 {% endblock %}
