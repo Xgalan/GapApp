@@ -5,6 +5,12 @@
 <div class="col">
 <h3>Lista codici per contapezzi</h3>
 {% if partnumbers_list %}
+<div class="input-group mb-3 mt-3 w-50">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Cerca:</span>
+    </div>
+    <input type="search" id="partnumber-search" name="partnumber-search" class="form-control" placeholder="Codice ..." aria-label="Partnumber" aria-describedby="basic-addon1">
+</div>
 <div class="table-responsive">
     <table class="table table-hover table-bordered table-sm">
         <thead>
@@ -18,7 +24,7 @@
         </thead>
         <tbody>
         {% for p in partnumbers_list %}
-            <tr>
+            <tr data-partnumber="{{ p.sku }}">
                 <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
                 <td>{{ p.sku }}</td>
                 <td>{{ p.description }}</td>
@@ -30,11 +36,18 @@
     </table>
 </div>
 {% else %}
-<p>Nessun codice presente.</p>
+<p class="lead">Nessun codice presente.</p>
 {% endif %}
     <p>
         Nr. totale codici: {{ partnumbers_list.count }}
     </p>
 </div>
 </div>
+{% endblock %}
+{% block page_script %}
+<script>
+    $(function() {
+        $( "#partnumber-search" ).simpleFilter("tr", "partnumber");
+    });
+</script>
 {% endblock %}

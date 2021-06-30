@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-{% load static %}
 {% block title %}GAP - Prodotto Finito Richiesto{% endblock %}
 {% block content %}
 <div class="row">
@@ -48,5 +47,9 @@
 </div>
 {% endblock %}
 {% block page_script %}
-<script src="{% static 'js/requested.js' %}"></script>
+<script>
+    $(function() {
+        $( "#partnumber-search" ).simpleFilter("tr", "partnumber");
+    });
+</script>
 {% endblock %}
