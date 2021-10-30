@@ -77,7 +77,9 @@ $(function() {
             dataType: 'json',
             data: function (params) {
                 var query = {
-                  search: params.term
+                  search: params.term,
+                  page: params.page || 1,
+                  page_size: 50
                 }
                 return query;
             },
@@ -88,7 +90,10 @@ $(function() {
                             id: obj.id,
                             text: obj.lot_display
                         };
-                    })
+                    }),
+                    pagination: {
+                        more: data.next != null
+                    }
                 };
             }
         }
