@@ -1,20 +1,19 @@
 version: "3.1"
 volumes:
-  gapapp_v1:
+  gapapp_v0.2:
 services:
-  gapapp-v1:
+  gapapp-v0.2:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gapapp-v1:latest
-    container_name: gapapp-v1
-    environment:
-      - TZ=Europe/Rome
-      - MODULE_NAME=gap.asgi
-      - VARIABLE_NAME=application
-      - PORT=8000
+    #command: ["python", "./gap/manage.py", "runserver", "0.0.0.0:8000"]
+    command: ["gunicorn", "--config", "./gap/gunicorn.conf.py", "gap.wsgi:application"]
+    image: gapapp-v0.2:latest
+    container_name: gapapp-v0.2
+    env_file:
+      - ./gap/.env
     volumes:
-      - gapapp_v1:/app
+      - gapapp_v0.2:/usr/src/app
     ports:
       - "8080:8000"
     restart: unless-stopped

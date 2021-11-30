@@ -1,20 +1,19 @@
-FROM tiangolo/uvicorn-gunicorn:python3.8-slim
+FROM python:3.8.12-slim-bullseye
 
-COPY ./gap /app
-COPY setup.py setup.py
-RUN /bin/bash -c 'rm /app/main.py'
-RUN /bin/bash -c 'pip install --editable .'
-RUN /bin/bash -c './manage.py makemigrations'
-RUN /bin/bash -c './manage.py migrate'
+WORKDIR /usr/src/app
+COPY . .
+RUN pip install --editable .
+RUN python ./gap/manage.py makemigrations
+RUN python ./gap/manage.py migrate
+RUN python ./gap/manage.py collectstatic --no-input
 
 # for creating first superuser you could use:
-RUN /bin/bash -c 'cat createsuperuser.example | ./manage.py shell'
-RUN /bin/bash -c 'cat createuser.example | ./manage.py shell'
+RUN /bin/bash -c 'cat ./gap/createsuperuser.example | python ./gap/manage.py shell'
+RUN /bin/bash -c 'cat ./gap/createuser.example | python ./gap/manage.py shell'
 
 # load users from dumped existing data
-#RUN /bin/bash -c './manage.py loaddata users.json'
-
-RUN /bin/bash -c './manage.py collectstatic --no-input'
+#RUN python ./gap/manage.py loaddata users.json
 
 # load fixtures, see content of loaddata.example
-#RUN /bin/bash -c './loaddata.example'
+#RUN /bin/bash -c './gap/loaddata.example'
+ENV PYTHONPATH=/usr/src/app/gap

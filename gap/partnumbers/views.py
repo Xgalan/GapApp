@@ -29,14 +29,14 @@ class PartnumberViewSet(ModelViewSet):
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
-    template_name = 'partnumbers/api_list.html'
+    template_name = 'api_list.html'
     filter_backends = [SearchFilter]
     search_fields  = ['sku']
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if request.accepted_renderer.format == 'html':
-            return Response({'object': instance}, template_name='partnumbers/partnumber_api_detail.html')
+            return Response({'object': instance}, template_name='api_detail.html')
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -51,7 +51,7 @@ class PartnumberViewSet(ModelViewSet):
             Q(category__category_name='Materiale di consumo') |
             Q(category__category_name='Bimetallo in nastro')
             ).order_by('sku')
-        return Response({'partnumbers_list': q}, template_name='partnumbers/print_list.html')
+        return Response({'partnumbers_list': q}, template_name='print_list.html')
 
     @action(
         detail=True,
@@ -83,7 +83,7 @@ class PartnumberViewSet(ModelViewSet):
                         "se": instance.storage_area()
                     }
                 },
-                template_name='partnumbers/print_detail.html'
+                template_name='print_detail.html'
             )
         return Response({'warning': 'only HTML response permitted on this endpoint'})
 

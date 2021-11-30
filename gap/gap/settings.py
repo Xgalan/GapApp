@@ -31,6 +31,7 @@ LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
     'partnumbers.apps.PartnumbersConfig',
     'pickings.apps.PickingsConfig',
     'inspections.apps.InspectionsConfig',
@@ -66,7 +67,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'templates',
+            'gap/templates',
             ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -114,9 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'it'
+LANGUAGE_CODE = env("LANGUAGE_CODE")
 
-TIME_ZONE = 'Europe/Rome'
+TIME_ZONE = env("TZ")
 
 USE_I18N = True
 
