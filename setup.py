@@ -20,7 +20,6 @@ setuptools.setup(
         "uritemplate",
         "whitenoise",
         "django-environ",
-        "requests",
         "gunicorn",
     ],
     include_package_data=True,
