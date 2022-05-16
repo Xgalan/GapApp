@@ -1,1 +1,1 @@
-from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('your-superusername', 'your-email@your-domain', 'your-password')
+from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', 'your-email@your-domain', 'toor')

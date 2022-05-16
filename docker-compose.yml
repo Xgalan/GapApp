@@ -8,13 +8,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
     image: gapapp-v0.2:latest
     container_name: gapapp-v0.2
-    user: gap:gap
     env_file:
       - ./gap/.env
+    command: >
+      gunicorn --worker-tmp-dir /dev/shm --config ./gap/gunicorn.conf.py gap.wsgi:application
     volumes:
       - gapapp_v0.2:/usr/src/app
+      - type: bind
+        source: ../databases
+        target: /srv/databases
     ports:
       - "8080:8000"
     restart: unless-stopped

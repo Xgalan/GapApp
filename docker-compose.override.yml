@@ -1,0 +1,5 @@
+version: "3.4"
+
+services:
+  gapapp-v0.2:
+    user: ${USER_ID}:${GROUP_ID}
