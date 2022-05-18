@@ -1,4 +1,5 @@
 #!/bin/bash
+# this commands will load fixtures from each folder named 'fixtures' and contained in every app folder
 ./manage.py loaddata partnumbers
 ./manage.py loaddata inspections
 ./manage.py loaddata orders
