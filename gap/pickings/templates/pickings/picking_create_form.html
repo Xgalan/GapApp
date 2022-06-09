@@ -77,18 +77,40 @@ $(function() {
             dataType: 'json',
             data: function (params) {
                 var query = {
-                  search: params.term,
+                  lot_number__contains: params.term,
                   page: params.page || 1,
                   page_size: 50
                 }
                 return query;
             },
             processResults: function(data) {
+                data.results.sort(function(a, b) {
+                    const supplier_typeA = a.supplier_type.toUpperCase(); // ignore upper and lowercase
+                    const supplier_typeB = b.supplier_type.toUpperCase(); // ignore upper and lowercase
+                    if (supplier_typeA < supplier_typeB) {
+                        return -1;
+                    }
+                    if (supplier_typeA > supplier_typeB) {
+                        return 1;
+                    }
+
+                    // supplier_types must be equal
+                    return 0;
+                });
+                var groupedResults = {};
+                data.results.forEach(function(obj) {
+                    if (groupedResults.hasOwnProperty(obj.supplier_type_display)) {
+                        groupedResults[obj.supplier_type_display].push(obj);
+                    } else {
+                        groupedResults[obj.supplier_type_display] = [
+                            obj
+                        ];
+                    }
+                });
                 return {
-                    results: $.map(data.results, function(obj) {
+                    results: $.map(Object.entries(groupedResults), function(el) {
                         return {
-                            id: obj.id,
-                            text: obj.lot_display
+                            text: el[0], children: el[1]
                         };
                     }),
                     pagination: {

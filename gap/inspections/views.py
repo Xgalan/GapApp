@@ -7,14 +7,23 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.generics import ListAPIView
 from rest_framework import permissions
-from rest_framework import filters
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from django_filters import rest_framework as filters
 
 from core.views import StandardResultsSetPagination
 from inspections.models import Lot
 from inspections.forms import LotForm
 from inspections.serializers import LotSerializer
 
+
+class LotFilter(filters.FilterSet):
+    class Meta:
+        model = Lot
+        fields = {
+            "lot_number": ["exact", "contains"],
+            "lot_date": ["year__gt"],
+            "supplier_type": ["exact"]
+        }
 
 
 class ListView(ListAPIView):
@@ -27,8 +36,8 @@ class ListView(ListAPIView):
     pagination_class = StandardResultsSetPagination
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
     template_name = 'inspections/list.html'
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['lot_number']
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = LotFilter
 
 
 class UpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.UpdateView):
