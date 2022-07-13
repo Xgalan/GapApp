@@ -23,6 +23,7 @@ from rest_framework.schemas import get_schema_view
 from partnumbers.views import PartnumberViewSet
 from pickings.views import PickingViewSet
 from orders.views import OrderViewSet
+from warehouse.views import StorageViewSet
 
 
 
@@ -30,6 +31,7 @@ router = routers.DefaultRouter()
 router.register(r'partnumbers', PartnumberViewSet, basename='partnumber')
 router.register(r'pickings', PickingViewSet, basename='picking')
 router.register(r'orders', OrderViewSet, basename='order')
+router.register(r'storage', StorageViewSet, basename='storage')
 
 schema_url_patterns = [
     path('api/', include(router.urls)),

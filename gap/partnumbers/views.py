@@ -39,6 +39,26 @@ class PartnumberViewSet(ModelViewSet):
             return Response({'object': instance}, template_name='api_detail.html')
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        renderer_classes=[TemplateHTMLRenderer]
+
+    )
+    def print_storage(self, request):
+        q = Partnumber.objects.select_related('category').exclude(
+            category__category_name='Prodotto Finito')
+        results = [
+            {
+                "pk": p.id,
+                "sku": p.sku,
+                "category": p.category,
+                "picking_area": p.picking_area(),
+                "storage_area": p.storage_area()
+            } for p in q
+        ]        
+        return Response({"partnumbers_list": results}, template_name='print_storage.html')
 
     @action(
         detail=False,

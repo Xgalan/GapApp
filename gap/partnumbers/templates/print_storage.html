@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+{% block title %}GAP - Lista Codici - Posizione in magazzino{% endblock %}
+{% block content %}
+<div class="row">
+<div class="col">
+<h3>Lista codici - Posizione in magazzino</h3>
+{% if partnumbers_list %}
+<div class="input-group mb-3 mt-3 w-50 d-print-none">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Cerca:</span>
+    </div>
+    <input type="search" id="partnumber-search" name="partnumber-search" class="form-control" placeholder="Codice ..." aria-label="Partnumber" aria-describedby="basic-addon1">
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Codice</th>
+                <th>Categoria</th>
+                <th>Area Prelievo</th>
+                <th>Area Magazzino</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in partnumbers_list %}
+            <tr data-partnumber="{{ p.sku }}">
+                <td>{{ p.sku }}</td>
+                <td>{{ p.category }}</td>
+                <td>
+                    {% for pg in p.picking_area %}
+                    <ul class="list-inline">
+                        <li class="list-inline-item">{{ forloop.counter }}.</li>
+                        {% for p in pg %}
+                        <li class="list-inline-item">{{ p }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% empty %}
+                    Nessuna area prelievo presente.
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for se in p.storage_area %}
+                    <ul class="list-inline">
+                        <li class="list-inline-item">{{ forloop.counter }}.</li>
+                        {% for s in se %}
+                        <li class="list-inline-item">{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% empty %}
+                    Nessun magazzino presente.
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="lead">Nessun codice presente.</p>
+{% endif %}
+</div>
+</div>
+{% endblock %}
+{% block page_script %}
+<script>
+    $(function() {
+        $( "#partnumber-search" ).simpleFilter("tr", "partnumber");
+    });
+</script>
+{% endblock %}
