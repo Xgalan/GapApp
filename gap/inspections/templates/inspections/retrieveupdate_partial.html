@@ -1,0 +1,38 @@
+<div class="card mb-3">
+    <h5 class="card-header">Dettaglio Lotto {{ lot.lot_display }}</h5>
+    <div class="card-body">
+        <form id="update-form">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id_lot_number">Nr. Lotto</label>
+                    <input type="number" name="lot_number" class="form-control" id="id_lot_number" placeholder="Nr. Lotto" value="{{ lot.lot_number }}" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_supplier_type">Tipo di fornitore</label>
+                    <select name="supplier_type" data-selected="{{ lot.supplier_type }}" class="form-control" id="id_supplier_type" required>
+                    <option value="fn"></option>
+                    <option value="tz">TZ</option>
+                    <option value="sclpun">SCL/pun</option>
+                    <option value="int_pr">Produzione interna</option>
+                    <option value="t">T</option>
+                    <option value="r">R</option>
+                    <option value="QPS">QPS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_lot_date">Data di consegna</label>
+                <input type="date" name="lot_date" class="form-control"
+                    id="id_lot_date" value="{{ lot.lot_date }}"  
+                    pattern="\d{4}-\d{2}-\d{2}" required>
+            </div>
+            <button id="updateButton" class="btn btn-sm btn-warning float-left"
+                    hx-put="{% url 'lot_retrieveupdate' lot.id %}" 
+                    hx-target="#lot-retrieve-update"
+                    hx-confirm="Confermi modifica lotto {{ lot.lot_display }}?">
+                    Modifica</button>
+        </form>
+        <p class="text-right"><small class="text-muted">
+            Ultima modifica: {{ lot.modified }}</small></p>
+    </div>
+</div>

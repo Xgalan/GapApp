@@ -1,0 +1,61 @@
+<form>
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.sku.id_for_label }}" class="col-sm-3 col-form-label">{{ form.sku.label }}</label>
+        <div class="col-sm-9">
+            {{ form.sku }}
+            <span class="help-block">
+                {{ field.errors|escape }}
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.description.id_for_description }}" class="col-sm-3 col-form-label">{{ form.description.label }}</label>
+        <div class="col-sm-9">
+            {{ form.description }}<span class="help-block">
+                {{ field.errors|escape }}
+            </span></div>
+    </div>
+
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.unit.id_for_label }}" class="col-sm-3 col-form-label">{{ form.unit.label }}</label>
+        <div class="col-sm-9">
+            {{ form.unit }}<span class="help-block">
+                {{ field.errors|escape }}
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.pmu.id_for_pmu }}" class="col-sm-3 col-form-label">{{ form.pmu.label }}</label>
+        <div class="col-sm-9">
+            {{ form.pmu }}<span class="help-block">
+                {{ field.errors|escape }}
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.db_nr.id_for_db_nr }}" class="col-sm-3 col-form-label">{{ form.db_nr.label }}</label>
+        <div class="col-sm-9">
+            {{ form.db_nr }}<span class="help-block">
+                {{ field.errors|escape }}
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group row {% if field.errors %}has-error{% endif %}">
+        <label for="{{ form.category.id_for_category }}" class="col-sm-3 col-form-label">{{ form.category.label }}</label>
+        <div class="col-sm-9">
+            {{ form.category }}<span class="help-block">
+                {{ field.errors|escape }}
+            </span>
+        </div>                
+    </div>
+
+    <button type="submit" class="btn btn-primary"
+        hx-post="{% url 'partnumber_create' %}"
+        hx-target="#partnumber-form"
+        hx-swap="innerHTML">
+        <i class="bi bi-save"></i>  Salva</button>
+</form>

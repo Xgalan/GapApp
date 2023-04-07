@@ -1,0 +1,39 @@
+{% extends "main_content.html" %}
+{% block title %}GAP - Lista movimenti {% endblock %}
+{% block content %}
+<form class="shadow-sm border rounded p-3 mb-3"
+    hx-include="[name='partnumber__sku__icontains'],[name='picking_date_after'],[name='picking_date_before']"
+    hx-encoding="application/x-www-form-urlencoded">
+    <div class="form-group">
+        <label for="id_partnumber__sku__icontains">Cerca movimento per codice</label>
+        <input type="text" class="form-control" name="partnumber__sku__icontains" 
+            id="id_partnumber__sku__icontains" placeholder="Codice...">
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="id_picking_date_0">Data immissione inizio</label>
+            <input type="date" id="id_picking_date_0"
+                class="form-control" 
+                pattern="\d{4}-\d{2}-\d{2}"
+                name="picking_date_after">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="id_picking_date_1">Data immissione fine</label>
+            <input type="date" id="id_picking_date_1"
+                class="form-control" 
+                pattern="\d{4}-\d{2}-\d{2}"
+                name="picking_date_before">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-secondary"
+        hx-get="{% url 'picking_list' %}"
+        hx-push-url="false" 
+        hx-target="#picking-object-list"
+        hx-swap="innerHTML">Cerca</button>
+    <input type="reset" class="btn btn-outline-secondary"/>
+</form>
+
+<div id="picking-object-list">
+    {% include 'picking_filter_partial.html' %}
+</div>
+{% endblock %}

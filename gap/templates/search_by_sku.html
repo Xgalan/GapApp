@@ -1,0 +1,16 @@
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+    </div>
+    <input type="text" name="search-by-sku" placeholder="Cerca codice..." class="form-control"
+        hx-post="{% url 'partnumber-search-by-sku' %}" 
+        hx-trigger="keyup changed delay:0.5s"
+        hx-target="#partnumbers-results"
+        hx-push-url="false">
+    <div class="input-group-append">
+        <button id="search-sku" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
+        <div class="dropdown-menu dropdown-menu-right" id="partnumbers-results">
+            <h6 class="dropdown-header">Nessun risultato.</h6>
+        </div>
+    </div>
+</div>

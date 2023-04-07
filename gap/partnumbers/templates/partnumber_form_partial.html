@@ -1,0 +1,50 @@
+<form class="shadow-sm border rounded p-3 mb-3">
+    <legend>Dettaglio codice: {{ object.sku }}</legend>
+
+    <div class="form-group row">
+        <label for="{{ form.sku.id_for_label }}" class="col-sm-3 col-form-label">{{ form.sku.label }}</label>
+        <div class="col-sm-9">
+            {{ form.sku }}
+        </div>
+    </div>
+    
+    <div class="form-group row">
+        <label for="{{ form.description.id_for_description }}" class="col-sm-3 col-form-label">{{ form.description.label }}</label>
+        <div class="col-sm-9">
+            {{ form.description }}</div>
+    </div>
+    
+    <div class="form-group row">
+        <label for="{{ form.unit.id_for_label }}" class="col-sm-3 col-form-label">{{ form.unit.label }}</label>
+        <div class="col-sm-9">
+            {{ form.unit }}
+        </div>
+    </div>
+    
+    <div class="form-group row">
+        <label for="{{ form.pmu.id_for_pmu }}" class="col-sm-3 col-form-label">{{ form.pmu.label }}</label>
+        <div class="col-sm-9">
+            {{ form.pmu }}
+        </div>
+    </div>
+    
+    <div class="form-group row">
+        <label for="{{ form.db_nr.id_for_db_nr }}" class="col-sm-3 col-form-label">{{ form.db_nr.label }}</label>
+        <div class="col-sm-9">
+            {{ form.db_nr }}
+        </div>
+    </div>
+    
+    <div class="form-group row">
+        <label for="{{ form.category.id_for_category }}" class="col-sm-3 col-form-label">{{ form.category.label }}</label>
+        <div class="col-sm-9">
+            {{ form.category }}
+        </div>                
+    </div>
+    
+    <button type="submit" class="btn btn-primary"
+        hx-post="{% url 'partnumber_update' object.id %}"
+        hx-target="#partnumber-form"
+        hx-swap="innerHTML">
+        Salva</button>
+</form>

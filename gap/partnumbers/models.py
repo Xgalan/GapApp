@@ -5,14 +5,16 @@ from django.db import models
 
 from django_extensions.db.models import TimeStampedModel
 
+from core.models import Source
 
 
 class Category(TimeStampedModel):
     category_name = models.CharField(max_length=60, unique=True)
+    sources = models.ManyToManyField(Source)
 
     class Meta:
-        ordering = ('category_name',)
-        verbose_name_plural = 'categories'
+        ordering = ("category_name",)
+        verbose_name_plural = "categories"
 
     def __str__(self):
         return "%s" % self.category_name
@@ -22,12 +24,13 @@ class DbManager(models.Manager):
     """
     Utilities that returns data relatives to weight scale database
     """
+
     def get_max_nr(self):
         # Find the MAX db_nr
-        return self.aggregate(models.Max('db_nr'))
+        return self.aggregate(models.Max("db_nr"))
 
     def new_db_nr(self):
-        q = self.get_max_nr()['db_nr__max']
+        q = self.get_max_nr()["db_nr__max"]
         if q:
             return q + 1
         else:
@@ -35,8 +38,11 @@ class DbManager(models.Manager):
 
     def db_free_nr(self):
         from itertools import chain
-        min_max = set(range(0,self.new_db_nr()))
-        return sorted(min_max.difference(set(chain.from_iterable(self.values_list('db_nr')))))
+
+        min_max = set(range(0, self.new_db_nr()))
+        return sorted(
+            min_max.difference(set(chain.from_iterable(self.values_list("db_nr"))))
+        )
 
 
 class PartnumberManager(models.Manager):
@@ -45,17 +51,17 @@ class PartnumberManager(models.Manager):
 
 
 class Partnumber(TimeStampedModel):
-    PCS = 'pcs'
-    G = 'gr'
-    M = 'mt'
-    MM = 'mm'
-    L = 'lt'
+    PCS = "pcs"
+    G = "gr"
+    M = "mt"
+    MM = "mm"
+    L = "lt"
     UNIT = [
-        (PCS, 'pezzi'),
-        (G, 'grammi'),
-        (M, 'metri'),
-        (MM, 'millimetri'),
-        (L, 'litri'),
+        (PCS, "pezzi"),
+        (G, "grammi"),
+        (M, "metri"),
+        (MM, "millimetri"),
+        (L, "litri"),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sku = models.CharField(max_length=60, unique=True, db_index=True)
@@ -63,20 +69,21 @@ class Partnumber(TimeStampedModel):
     description = models.TextField(blank=True)
     pmu = models.FloatField(null=True, blank=True)
     db_nr = models.IntegerField(null=True, blank=True)
-    category = models.ForeignKey('Category',
-                                 on_delete=models.CASCADE)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
 
     objects = PartnumberManager()
     db = DbManager()
 
     def picking_area(self):
         return [
-            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.item_set.filter(area='pg')
+            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)])
+            for i in self.item_set.filter(area="pg")
         ]
 
     def storage_area(self):
         return [
-            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)]) for i in self.item_set.filter(area='se')
+            iconcat([str(s) for s in i.storage.get_ancestors()], [str(i.storage)])
+            for i in self.item_set.filter(area="se")
         ]
 
     def __str__(self):
@@ -90,11 +97,15 @@ class Partnumber(TimeStampedModel):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('partnumber-detail', args=((self.id,)))
+
+        return reverse("partnumber_detail", args=((self.id,)))
 
     @staticmethod
     def autocomplete_search_fields():
-        return ("id__iexact", "sku__icontains",)
+        return (
+            "id__iexact",
+            "sku__icontains",
+        )
 
     class Meta:
-        ordering = ('sku',)
+        ordering = ("sku",)

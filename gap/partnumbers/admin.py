@@ -6,8 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 
-from .models import Partnumber, Category
-
+from partnumbers.models import Partnumber, Category
 
 
 class PartnumberResource(resources.ModelResource):
@@ -15,7 +14,11 @@ class PartnumberResource(resources.ModelResource):
 
     class Meta:
         model = Partnumber
-        exclude = ('created', 'modified', 'id',)
+        exclude = (
+            "created",
+            "modified",
+            "id",
+        )
 
 
 class CategoryResource(resources.ModelResource):
@@ -25,14 +28,23 @@ class CategoryResource(resources.ModelResource):
 
 class PartnumberAdmin(ImportExportModelAdmin):
     resource_class = PartnumberResource
-    list_display = ('sku', 'category',)
-    list_filter = ('category',)
+    list_display = (
+        "sku",
+        "category",
+    )
+    list_filter = ("category",)
+
+
+class SourcesInline(admin.TabularInline):
+    model = Category.sources.through
 
 
 class CategoryAdmin(ImportExportModelAdmin):
     resource_class = CategoryResource
-    list_display = ('id', 'category_name',)
-
+    list_display = ("id", "category_name")
+    inlines = [
+        SourcesInline,
+    ]
 
 
 admin.site.register(Partnumber, PartnumberAdmin)

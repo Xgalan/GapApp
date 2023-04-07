@@ -1,0 +1,93 @@
+{% extends "index.html" %}
+{% block title %}GAP - Dettaglio {{ object }}{% endblock %}
+{% block main %}
+<div class="row d-print-none">
+    <div class="col-md-6">
+    {% include "search_by_sku.html" %}</div>
+    <div class="col-md-6">
+        <div class="btn-group mb-3" role="group">
+            <a href="{% url 'partnumber-print-detail' object.id %}" 
+                class="btn btn-secondary">Anteprima stampa</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col" id="partnumber-form">
+        <form class="shadow-sm border rounded p-3 mb-3">
+            <legend>Dettaglio codice: {{ object.sku }}</legend>
+            <div class="form-group row">
+                <label for="id_sku" class="col-sm-3 col-form-label">Codice:</label>
+                <div class="col-sm-9">
+                <input type="text" name="sku" value="{{ object.sku }}" class="form-control-plaintext" maxlength="60" readonly id="id_sku">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="id_description" class="col-sm-3 col-form-label">Descrizione:</label>
+                <div class="col-sm-9">
+                <textarea name="description" cols="40" rows="4" class="form-control-plaintext" id="id_description" readonly>
+                    {{ object.description }}
+                </textarea>
+            </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="id_unit" class="col-sm-3 col-form-label">Unità stock:</label>
+                <div class="col-sm-9">
+                    <input type="text" name="unit" class="form-control-plaintext" 
+                        id="id_unit" readonly value="{{ object.get_unit_display }}">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="id_pmu" class="col-sm-3 col-form-label">P.M.U. (g):</label>
+                <div class="col-sm-9">
+                <input type="text" name="pmu" readonly value="{{ object.pmu }}" 
+                    class="form-control-plaintext" step="any" id="id_pmu">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="id_db_nr" class="col-sm-3 col-form-label">Nr. DB contapezzi:</label>
+                <div class="col-sm-9">
+                <input type="text" name="db_nr" readonly
+                value="{{ object.db_nr }}" class="form-control-plaintext" id="id_db_nr">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="id_category" class="col-sm-3 col-form-label">Categoria:</label>
+                <div class="col-sm-9">
+                    <input type="text" name="category" readonly id="id_category"
+                    class="form-control-plaintext" value="{{ object.category }}">
+                </div>                
+            </div>
+            {% if user.is_staff %}
+                {% if object %}
+                <button type="button" class="btn btn-warning" 
+                    hx-get="{% url 'partnumber_update' object.id %}"
+                    hx-target="#partnumber-form"
+                    hx-swap="innerHTML">Modifica</button>
+                {% endif %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+<div class="row d-print-none">
+    <div class="col">
+        <input type="hidden" name="partnumber__sku__icontains" value="{{ object.sku }}">
+        <div class="btn-group mb-3">
+        <a href="{% url 'picking_create_pn' object.id %}" class="btn btn-primary">
+            Aggiungi movimento...</a>
+        <button class="btn btn-secondary"
+            hx-include="[name='partnumber__sku__icontains']" 
+            hx-get="{% url 'picking_list' %}"
+            hx-target="#picking-object-list"
+            hx-swap="innerHTML">
+            Visualizza movimenti
+        </button>
+        </div>
+        <div id="picking-object-list"></div>
+    </div>
+</div>
+{% endblock %}

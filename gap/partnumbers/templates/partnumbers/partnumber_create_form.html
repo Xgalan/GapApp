@@ -1,22 +1,11 @@
-{% extends "partnumbers/base_form.html" %}
+{% extends "main_content.html" %}
 {% block title %}GAP - Crea nuovo codice{% endblock %}
-{% block form %}
+{% block content %}
+
 <div class="card mb-3">
     <h5 class="card-header">Crea nuovo codice</h5>
-    <div class="card-body">
-        <form method="POST">{% csrf_token %}
-            {% for field in form %}
-            <div class="form-group {% if field.errors %}has-error{% endif %}">
-                {{ field.label_tag }}
-                {{ field }}
-                <span class="help-block">
-                    {{ field.errors|escape }}
-                </span>
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>
-                Registra</button>
-        </form>
+    <div class="card-body" id="partnumber-form">
+        {% include 'partnumber_unbound_form.html' %}
     </div>
     <div class="card-footer">
         Numero da usare per inserimento in database contapezzi: <b>{{ new_db_nr }}</b><br>

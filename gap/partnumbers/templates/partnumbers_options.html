@@ -1,0 +1,5 @@
+<h6 class="dropdown-header">Risultati:</h6>
+{% for p in partnumbers %}
+<a href="{% url 'partnumber_detail' p.id %}" 
+    class="dropdown-item">{{ p.sku }}</a>
+{% endfor %}

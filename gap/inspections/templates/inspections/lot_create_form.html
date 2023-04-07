@@ -1,41 +1,34 @@
-{% extends "base_form.html" %}
+{% extends "main_content.html" %}
 {% block title %}GAP - Crea nuovo lotto{% endblock %}
-{% block form %}
-<p>
-    <a href="{% url 'lot_list' %}" class="btn btn-outline-secondary"> 
-        <i class="bi bi-arrow-left"></i>
-        Lotti</a>
-</p>
-<div class="card">
-        <h5 class="card-header">Crea nuovo lotto</h5>
+{% block content %}
+<div class="card mb-3">
+    <h5 class="card-header">Crea nuovo lotto</h5>
     <div class="card-body">
-        <form method="POST">{% csrf_token %}
-            {% for field in form %}
+        <form id="update-form" method="POST">{% csrf_token %}
+            <div class="form-row">
+                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                    {{ form.lot_number.label_tag }}
+                    {{ form.lot_number }}
+                    <span class="help-block">
+                    {{ form.lot_number.errors|escape }}</span>
+                </div>
+                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                    {{ form.supplier_type.label_tag}}
+                    {{ form.supplier_type }}
+                    <span class="help-block">
+                    {{ form.supplier_type.errors|escape }}</span>
+                </div>
+            </div>
             <div class="form-group {% if field.errors %}has-error{% endif %}">
-                {{ field.label_tag }}
-                {{ field }}
+                {{ form.lot_date.label_tag }}
+                {{ form.lot_date }}
                 <span class="help-block">
                     {{ field.errors|escape }}
                 </span>
             </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-outline-primary"> 
-                <i class="bi bi-save"></i>
-                Registra
-            </button>
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-save"></i>  Registra</button>
         </form>
     </div>
 </div>
-{% endblock %}
-{% block page_script %}
-<script>
-$(function() {
-    $("#id_lot_date").flatpickr({
-        altInput: true,
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d",
-        defaultDate: Date.now(),
-    });
-});
-</script>
 {% endblock %}

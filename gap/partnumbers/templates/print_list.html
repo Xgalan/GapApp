@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block title %}GAP - Lista Codici{% endblock %}
-{% block content %}
+{% block main %}
 <div class="row">
 <div class="col">
 <h3>Lista codici per contapezzi</h3>
@@ -36,7 +36,7 @@
     </table>
 </div>
 {% else %}
-<p class="lead">Nessun codice presente.</p>
+<p class="lead text-center">Nessun codice presente.</p>
 {% endif %}
     <p>
         Nr. totale codici: {{ partnumbers_list.count }}

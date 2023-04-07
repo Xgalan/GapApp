@@ -1,0 +1,9 @@
+{% if inspections %}
+<h6 class="dropdown-header">Risultati:</h6>
+{% for i in inspections %}
+<a href="{% url 'lot_retrieveupdate' i.id %}" 
+    class="dropdown-item">{{ i.lot_display }}</a>
+{% endfor %}
+{% else %}
+<h6 class="dropdown-header">Nessun risultato.</h6>
+{% endif %}

@@ -1,0 +1,38 @@
+{% if object_list %}
+{% if is_paginated %}
+<div class="row">
+    {% include "picking_filter_pagination.html" %}
+</div>
+{% endif %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <caption>Lista Movimenti</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                <th>Codice</th>
+                <th>Nr. Lotto</th>
+                <th>Data immissione in area prelievo</th>
+                <th>Operatore</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for picking in object_list %}
+            <tr>
+                <td>
+                    <!-- Inserire comando delete
+                    <a class="btn btn-outline-secondary btn-sm d-print-none" href="" role="button">
+                        <i class="bi bi-pencil"></i></a>-->
+                </td>
+                <td>{{ picking.partnumber.sku }}</td>
+                <td><a href="{% url 'lot_retrieveupdate' picking.lot.id %}">{{ picking.lot }}</a></td>
+                <td>{{ picking.picking_date }}</td>
+                <td>{{ picking.picking_operator.first_name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="lead text-center">Nessun movimento trovato.</p>
+{% endif %}

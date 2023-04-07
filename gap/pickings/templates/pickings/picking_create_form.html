@@ -1,46 +1,66 @@
-{% extends "base_form.html" %}
+{% extends "main_content.html" %}
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
-{% block form %}
-    <p>
-        <a href="{% url 'picking-list' %}" class="btn btn-outline-secondary"> 
-            <i class="bi bi-arrow-left"></i>
-            Movimenti</a>
-    </p>
-    {% if view.kwargs.pn_id %}
-    <a href="{% url 'lot_create_pn' view.kwargs.pn_id %}" class="btn btn-outline-primary">
-        Aggiungi lotto...
-    </a>
-    {% endif %}
-<div class="card mt-3">
+{% block content %}
+<div class="card">
     <h5 class="card-header">Inserisci nuovo movimento</h5>
     <div class="card-body">
         <form method="POST">{% csrf_token %}
-            {% for field in form %}
             <div class="form-group {% if field.errors %}has-error{% endif %}">
-                {{ field.label_tag }}
-                {{ field }}
-                <small id="" class="form-text text-muted">
-                    {{ field.errors|escape }}
+                {{ form.partnumber.label_tag }}
+                {{ form.partnumber }}
+                <small class="form-text text-muted">
+                    {{ form.partnumber.errors|escape }}
                 </small>
             </div>
-            {% endfor %}
+            <div class="form-row">
+                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                    {{ form.lot.label_tag }}
+                    {{ form.lot }}
+                    <small class="form-text text-muted">
+                        {{ form.lot.errors|escape }}
+                    </small>
+                    <span>
+                        {% if view.kwargs.pn_id %}
+                        <a href="{% url 'lot_create_pn' view.kwargs.pn_id %}" class="btn btn-outline-primary">
+                        Aggiungi lotto...</a>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.year.label_tag }}
+                    {{ form.year }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                    {{ form.picking_date.label_tag }}
+                    {{ form.picking_date }}
+                    <small class="form-text text-muted">
+                        {{ form.picking_date.errors|escape }}
+                    </small>
+                </div>
+                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                    {{ form.picking_operator.label_tag }}
+                    {{ form.picking_operator }}
+                    <small class="form-text text-muted">
+                        {{ form.picking_operator.errors|escape }}
+                    </small>
+                </div>
+            </div>
             <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>
                 Registra</button>
         </form>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}
 {% block page_script %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(function() {
-    $("#id_picking_date").flatpickr({
-        altInput: true,
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d",
-    });
-
     const partnumberFormSearch = $("#id_partnumber");
     const lotFormSearch = $("#id_lot");
+    const yearFormField = $("#id_year").addClass("form-control");
+    var urlLotSearch = "{% url 'lot_filtered' %}";
 
     partnumberFormSearch.select2({
         placeholder: "Cerca codice...",
@@ -66,6 +86,8 @@ $(function() {
                 };
             }
         }
+    }).on("change", function(e) {
+        lotFormSearch.prop("disabled", false);
     });
 
     lotFormSearch.select2({
@@ -73,11 +95,16 @@ $(function() {
         minimumInputLength: 1,
         theme: "bootstrap4",
         ajax: {
-            url: "{% url 'lot_list' %}",
+            url: function() {
+                return urlLotSearch + partnumberFormSearch.val()
+            },
             dataType: 'json',
             data: function (params) {
+                const year = new Date().getFullYear();
+                // search by lot number
                 var query = {
                   lot_number__contains: params.term,
+                  lot_date__year__gte: yearFormField.val(),
                   page: params.page || 1,
                   page_size: 50
                 }
@@ -119,7 +146,13 @@ $(function() {
                 };
             }
         }
-    });
+    }).prop(
+        "disabled", true
+    );
+
+    if ("{{ view.kwargs.pn_id }}") {
+        lotFormSearch.prop("disabled", false);
+    }
 });
 </script>
 {% endblock %}

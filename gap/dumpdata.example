@@ -2,5 +2,5 @@
 ./manage.py dumpdata partnumbers --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/partnumbers.json
 ./manage.py dumpdata inspections --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/inspections.json
 ./manage.py dumpdata pickings --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/pickings.json
-./manage.py dumpdata orders --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/orders.json
+#./manage.py dumpdata orders --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/orders.json
 ./manage.py dumpdata warehouse --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > /srv/fixtures/warehouse.json

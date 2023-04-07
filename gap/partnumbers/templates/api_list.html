@@ -1,11 +1,9 @@
 {% extends "index.html" %}
 {% block title %}GAP - Lista Codici{% endblock %}
-{% block content %}
+{% block main %}
 <div class="row">
 <div class="col">
 <h3>Lista codici</h3>
-<a class="btn btn-secondary" href="{% url 'partnumber_create' %}" role="button">
-    <i class="bi bi-plus-lg"></i> Aggiungi</a>
 {% if results %}
 {% include "pagination.html" %}
 <div class="table-responsive">
@@ -24,7 +22,7 @@
         <tbody>
         {% for p in results %}
             <tr>
-                <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
+                <td>{% if p.db_nr >= 0 %}{{ p.db_nr }}{% endif %}</td>
                 <td>
                         <a class="btn btn-outline-secondary btn-sm"
                             href="{% url 'partnumber-detail' p.id %}" role="button">
@@ -41,7 +39,7 @@
     </table>
 </div>
 {% else %}
-<p>Nessun codice presente.</p>
+<p class="lead text-center">Nessun codice presente.</p>
 {% endif %}
     <p>
         Totale Codici: {{ count }}

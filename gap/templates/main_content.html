@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% block main %}
+<div class="row">
+    <div class="col">
+        <h4>Gestione passaggio sottoassiemi e componenti in area prelievo</h4>
+        <hr>
+        {% with url_name=request.resolver_match.url_name %}
+        <nav class="nav nav-pills flex-column flex-sm-row mb-3">
+            <a class="flex-sm-fill text-sm-center nav-link {% if url_name == 'lot_list' %}active{% endif %}" href="{% url 'lot_list' %}">Lotti</a>
+            <a class="flex-sm-fill text-sm-center nav-link {% if url_name == 'picking_list' %}active{% endif %}" href="{% url 'picking_list' %}">Movimenti</a>
+            <a class="flex-sm-fill text-sm-center nav-link {% if url_name == 'picking_create' %}active{% endif %}" href="{% url 'picking_create' %}">Aggiungi movimento</a>
+        </nav>
+        {% endwith %}
+        {% block page_title %}{% endblock %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div id="alerts"></div>
+        {% block content %}
+        {% endblock content %}
+    </div>
+</div>
+{% endblock main %}

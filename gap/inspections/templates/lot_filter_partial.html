@@ -1,0 +1,29 @@
+{% if object_list %}
+{% if is_paginated %}
+<div class="row">
+    {% include "lot_filter_pagination.html" %}
+</div>
+{% endif %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <caption>Lista Lotti</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>Nr. Lotto</th>
+                <th>Data consegna</th>
+                <th>Tipo di fornitura</th></tr>
+        </thead>
+        <tbody>
+        {% for lot in object_list %}
+            <tr>
+                <td><a href="{% url 'lot_retrieveupdate' lot.id %}">{{ lot }}</a></td>
+                <td>{{ lot.lot_date }}</td>
+                <td>{{ lot.get_supplier_type_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="lead text-center">Nessun lotto trovato.</p>
+{% endif %}

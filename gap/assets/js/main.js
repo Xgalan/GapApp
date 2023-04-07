@@ -2,43 +2,22 @@ function arrayIsEmpty(arr) {
     if (Array.isArray(arr) && !arr.length) {
         return true;
     }
-};
+}
 
-$(function() {
-    const frmSearch = "#frmSearch";
-    var selectSearch = $( "#sel-partnumber-search" );
+function ready(fn) {
+    if (document.readyState !== 'loading') {
+        fn();
+    } else {
+        document.addEventListener('DOMContentLoaded', fn);
+    }
+}
 
-    selectSearch.select2({
-        placeholder: 'Cerca codice...',
-        minimumInputLength: 2,
-        theme: "bootstrap4",
-        ajax: {
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                  search: params.term
-                }
-                return query;
-            },
-            processResults: function(data) {
-                return {
-                    results: $.map(data.results, function(obj) {
-                        return {
-                            id: obj.id,
-                            text: obj.sku
-                        };
-                    })
-                };
-            }
+function selectOption(elementId) {
+    // elementID must be a string prepended with '#'
+    const selectEl = document.querySelector(elementId);
+    for (const [key, value] of Object.entries(selectEl.options)) {
+        if (value.value == selectEl.dataset.selected) {
+            selectEl.options.selectedIndex = key;
         }
-    });
-
-    $( frmSearch ).submit(function( event ) {
-        event.preventDefault();
-
-        const searchVal = selectSearch[0].value;
-        const urlSearch = `/api/partnumbers/${searchVal}/print_detail`;
-        $( this ).attr('action', urlSearch);
-        $( this )[0].submit();
-    });
-});
+    }
+}

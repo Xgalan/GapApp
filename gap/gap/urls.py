@@ -21,38 +21,39 @@ from rest_framework import routers
 from rest_framework.schemas import get_schema_view
 
 from partnumbers.views import PartnumberViewSet
-from pickings.views import PickingViewSet
-from orders.views import OrderViewSet
 from warehouse.views import StorageViewSet
 
 
-
 router = routers.DefaultRouter()
-router.register(r'partnumbers', PartnumberViewSet, basename='partnumber')
-router.register(r'pickings', PickingViewSet, basename='picking')
-router.register(r'orders', OrderViewSet, basename='order')
-router.register(r'storage', StorageViewSet, basename='storage')
+router.register(r"partnumbers", PartnumberViewSet, basename="partnumber")
+router.register(r"storage", StorageViewSet, basename="storage")
 
 schema_url_patterns = [
-    path('api/', include(router.urls)),
+    path("api/", include(router.urls)),
 ]
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('pickings/', include('pickings.urls')),
-    path('partnumbers/', include('partnumbers.urls')),
-    path('inspections/', include('inspections.urls')),
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('openapi', get_schema_view(
-        title="GappApp",
-        description="OpenAPI schema for GapApp",
-        version="0.1.0",
-        patterns=schema_url_patterns
-    ), name='openapi-schema'),
-    path('', include('core.urls')),
+    path("admin/", admin.site.urls),
+    path("pickings/", include("pickings.urls")),
+    path("partnumbers/", include("partnumbers.urls")),
+    path("inspections/", include("inspections.urls")),
+    path("accounts/login/", auth_views.LoginView.as_view(), name="login"),
+    path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path(
+        "openapi",
+        get_schema_view(
+            title="GappApp",
+            description="OpenAPI schema for GapApp",
+            version="0.1.0",
+            patterns=schema_url_patterns,
+        ),
+        name="openapi-schema",
+    ),
+    path("", include("core.urls")),
 ] + schema_url_patterns
 
 
-admin.site.site_header = "GAP - Gestione passaggio sottoassiemi e componenti in area prelievo"
+admin.site.site_header = (
+    "GAP - Gestione passaggio sottoassiemi e componenti in area prelievo"
+)
 admin.site.index_title = "Pannello di controllo"

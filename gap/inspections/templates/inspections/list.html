@@ -1,129 +1,67 @@
-{% extends "index.html" %}
+{% extends "main_content.html" %}
 {% block title %}GAP - Lista Lotti{% endblock %}
+{% block page_title %}<h4>Lista Lotti</h4>{% endblock %}
 {% block content %}
-<div class="row">
-<div class="col">
-<h3>Gestione passaggio sottoassiemi e componenti in area prelievo</h3>
-<h4>Lista Lotti</h4>
-{% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>{{ message }}</strong>
-    </div>
-    {% endfor %}
-{% endif %}
 <div class="btn-toolbar mb-2 mt-3" role="toolbar" aria-label="Toolbar with button groups">
-        <div class="btn-group mr-2" role="group" aria-label="First group">
-        <a class="btn btn-secondary" href="{% url 'lot_create' %}" role="button">
-            <i class="bi bi-plus-lg"></i> Aggiungi</a>
-        </div>
-        <div class="input-group">
+        <div class="input-group mr-2">
             <div class="input-group-prepend">
-              <div class="input-group-text" id="labelSearch"><i class="bi bi-search"></i></div>
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
-            <select id="selLotSearch" class="custom-select" style="width: 160px;"
-                aria-label="Cerca lotto..." aria-describedby="labelSearch"
-                data-ajax--url="{% url 'lot_list' %}"></select>
+            <input type="text" name="lot_number__contains" placeholder="Cerca lotto..." class="form-control"
+                hx-get="{% url 'lot_list' %}" 
+                hx-include="[name='supplier_type']" 
+                hx-trigger="keyup changed delay:0.5s"
+                hx-target="#inspections-results" hx-push-url="false">
+            <div class="input-group-append">
+                <button id="search-lot" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
+                <div class="dropdown-menu dropdown-menu-right" id="inspections-results">
+                    <h6 class="dropdown-header">Nessun risultato.</h6>
+                </div>
+            </div>
+        </div>
+        <div class="btn-group mr-2" role="group">
+            <select name="supplier_type" class="form-control" id="id_supplier_type">
+                <option value="fn"></option>
+                <option value="tz">TZ</option>
+                <option value="sclpun">SCL/pun</option>
+                <option value="int_pr">Produzione interna</option>
+                <option value="t">T</option>
+                <option value="r">R</option>
+                <option value="QPS">QPS</option>
+            </select>
+        </div>
+        <div class="btn-group" role="group" aria-label="First group">
+            <a class="btn btn-secondary" href="{% url 'lot_create' %}" role="button">
+                <i class="bi bi-plus-lg"></i> Aggiungi</a>
         </div>
 </div>
 {% if results %}
 {% include "pagination.html" %}
 <div class="table-responsive">
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover">
         <caption>Lista Lotti</caption>
-        <thead>
+        <thead class="thead-dark">
             <tr>
                 <th>#</th>
                 <th>Nr. Lotto</th>
                 <th>Data consegna</th>
-                <th>Data modifica</th>
             </tr>
         </thead>
         <tbody>
         {% for lot in results %}
             <tr>
                 <td>{{ forloop.counter }}</td>  <!-- -->
-                <td><a href="{% url 'lot_detail' lot.id %}">{{ lot.lot_display }}</a></td>
-                <td>{{ lot.lot_date }}</td>
-                <td>{{ lot.modified }}</td>
+                <td><a href="{% url 'lot_retrieveupdate' lot.id %}">{{ lot.lot_display }}</a></td>
+                <td>{{ lot.lot_date_display }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
 {% else %}
-<p class="lead">Nessun lotto presente.</p>
+<p class="lead text-center">Nessun lotto presente.</p>
 {% endif %}
-<p>
+<p class="text-italic text-muted">
     Totale Lotti: {{ count }}
 </p>
-</div>
-</div>
-{% endblock %}
-{% block page_script %}
-<script>
-$(function() {
-    var selectLotSearch = $( "#selLotSearch" );
-
-    selectLotSearch.select2({
-        placeholder: 'Cerca lotto...',
-        theme: "bootstrap4",
-        minimumInputLength: 1,
-        ajax: {
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                  lot_number__contains: params.term,
-                  page: params.page || 1,
-                  page_size: 50
-                }
-                return query;
-            },
-            processResults: function(data) {
-                data.results.sort(function(a, b) {
-                    const supplier_typeA = a.supplier_type.toUpperCase(); // ignore upper and lowercase
-                    const supplier_typeB = b.supplier_type.toUpperCase(); // ignore upper and lowercase
-                    if (supplier_typeA < supplier_typeB) {
-                        return -1;
-                    }
-                    if (supplier_typeA > supplier_typeB) {
-                        return 1;
-                    }
-
-                    // supplier_types must be equal
-                    return 0;
-                });
-                var groupedResults = {};
-                data.results.forEach(function(obj) {
-                    if (groupedResults.hasOwnProperty(obj.supplier_type_display)) {
-                        groupedResults[obj.supplier_type_display].push(obj);
-                    } else {
-                        groupedResults[obj.supplier_type_display] = [
-                            obj
-                        ];
-                    }
-                });
-                return {
-                    results: $.map(Object.entries(groupedResults), function(el) {
-                        return {
-                            text: el[0], children: el[1]
-                        };
-                    }),
-                    pagination: {
-                        more: data.next != null
-                    }
-                };
-            }
-        }
-    });
-
-    selectLotSearch.on('select2:select', function (e) { 
-        const searchObj = $(this).find(':selected');
-        var searchUrl = searchObj[0].baseURI + searchObj[0].value;
-        history.pushState(e.params.data, 'title', searchUrl);
-        history.go(0);
-    });
-});
-</script>
 {% endblock %}

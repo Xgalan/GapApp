@@ -1,0 +1,57 @@
+{% extends "main_content.html" %}
+{% block title %}GAP - Dettaglio Lotto {{ lot.lot_display }}{% endblock %}
+{% block content %}
+<div id="lot-retrieve-update">
+    {% include 'inspections/retrieveupdate_partial.html' %}</div>
+<div class="card mb-3">
+        <h5 class="card-header">Immissioni in Area Prelievo</h5>
+    {% if lot.picking_set.exists %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Codice</th>
+                    <th></th>
+                    <th>Data</th>
+                    <th>Operatore</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in lot.picking_set.all %}
+                <tr>
+                    <td><a href="{% url 'partnumber_detail' p.partnumber.id %}">{{ p.partnumber.sku }}</a></td>
+                    <td>{{ p.partnumber.category }}</td>
+                    <td>{{ p.picking_date|date }}</td>
+                    <td>{{ p.picking_operator.first_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <div class="card-body">
+        <p class="text-center">Nessun articolo immesso in area prelievo.</p>
+    </div>
+    {% endif %}
+    <div class="card-footer">
+        <a href="{% url 'picking_create_lot' lot.id %}" class="btn btn-sm btn-outline-primary">
+            Aggiungi movimento...
+        </a>
+    </div>
+</div>
+{% endblock %}
+{% block page_script %}<script>
+ready(function () {
+    selectOption("#id_supplier_type");
+
+    const alerts = document.querySelector("#alerts");
+    const successMessageTmpl = document.querySelector("#success-message");
+    
+    document.body.addEventListener("updatedLot", function(evt) {
+        selectOption("#id_supplier_type");
+
+        const message = successMessageTmpl.content.firstElementChild.cloneNode(true);
+        message.querySelector("strong").textContent = "Lotto " + evt.detail.lot_display + " modificato.";
+        alerts.appendChild(message);
+        document.title = "GAP - Dettaglio Lotto " + evt.detail.lot_display;
+    });
+});
+</script>{% endblock %}

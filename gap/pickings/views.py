@@ -1,64 +1,36 @@
-from django.urls import reverse
 from django.views import generic
-from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from django_filters.views import FilterView
 
-from core.views import StandardResultsSetPagination
 from pickings.models import Picking
 from pickings.serializers import PickingSerializer
 from pickings.forms import PickingForm
+from pickings.filters import PickingFilter
 
 
+class PickingFilterView(LoginRequiredMixin, FilterView):
+    filterset_class = PickingFilter
+    ordering = "-picking_date"
+    queryset = Picking.objects.select_related("partnumber")
+    paginate_by = 25
 
-class PickingViewSet(ModelViewSet):
-    """
-    CRUD API endpoint for pickings
-    """
-    queryset = Picking.objects.all()
-    serializer_class = PickingSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = StandardResultsSetPagination
-    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
-    template_name = 'pickings/list.html'
-    filter_backends = [SearchFilter]
-    search_fields = ['partnumber__sku']
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Picking.objects.order_by('-modified')
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "picking_filter_partial.html"
         else:
-            return Picking.objects.filter(
-                picking_operator=self.request.user).order_by('-modified')
+            template_name = "picking_filter.html"
 
-    @action(
-        detail=True,
-        methods=['get'],
-        renderer_classes=[JSONRenderer]
-    )
-    def partnumber(self, request, pk=None):
-        q = Picking.objects.filter(partnumber__id=pk).order_by('picking_date')
-        page = self.paginate_queryset(q)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(q, many=True)
-        return Response(serializer.data)
+        return template_name
 
 
 class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateView):
     model = Picking
     form_class = PickingForm
-    template_name_suffix = '_create_form'
+    template_name_suffix = "_create_form"
     success_message = "Movimento %(picking)s creato correttamente"
 
     def get_success_message(self, cleaned_data):
@@ -68,43 +40,35 @@ class CreateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.CreateVie
         )
 
     def form_invalid(self, form):
-        errors = form.errors.as_data()['__all__'][0]
-        messages.error(self.request, errors, extra_tags='danger')
+        errors = form.errors
+        if "__all__" in errors:
+            errors = form.non_field_errors()
+        messages.error(self.request, errors, extra_tags="danger")
         return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "picking_list",
+        )
 
     def get_form_kwargs(self):
         """Return the keyword arguments for instantiating the form."""
         kwargs = {
-            'initial': self.get_initial(),
-            'prefix': self.get_prefix(),
+            "initial": self.get_initial(),
+            "prefix": self.get_prefix(),
         }
-        if self.request.method in ('POST', 'PUT'):
-            kwargs.update({
-                'data': self.request.POST,
-                'files': self.request.FILES,
-            })
-        pn_id = self.kwargs.get('pn_id')
-        lot_id = self.kwargs.get('lot_id')
-        kwargs['initial']['picking_operator'] = self.request.user
+        if self.request.method in ("POST", "PUT"):
+            kwargs.update(
+                {
+                    "data": self.request.POST,
+                    "files": self.request.FILES,
+                }
+            )
+        pn_id = self.kwargs.get("pn_id")
+        lot_id = self.kwargs.get("lot_id")
+        kwargs["initial"]["picking_operator"] = self.request.user
         if pn_id:
-            kwargs['initial']['partnumber'] = pn_id
+            kwargs["initial"]["partnumber"] = pn_id
         if lot_id:
-            kwargs['initial']['lot'] = lot_id
+            kwargs["initial"]["lot"] = lot_id
         return kwargs
-
-
-class UpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.edit.UpdateView):
-    model = Picking
-    form_class = PickingForm
-    template_name_suffix = '_update_form'
-    success_message = "Movimento %(picking)s aggiornato correttamente"
-
-    def get_success_message(self, cleaned_data):
-        return self.success_message % dict(
-            cleaned_data,
-            picking=str(self.object),
-        )
-
-    def get_object(self):
-        id_ = self.kwargs.get("pk")
-        return get_object_or_404(Picking, id=id_)
