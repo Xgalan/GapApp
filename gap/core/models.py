@@ -8,7 +8,10 @@ from core.mixins import SourceType
 
 class Source(TimeStampedModel):
     shortform = models.CharField(
-        choices=SourceType.choices, default=SourceType.SUPPLIER, max_length=6
+        choices=SourceType.choices,
+        default=SourceType.SUPPLIER,
+        max_length=6,
+        unique=True,
     )
     description = models.CharField(max_length=60, unique=True, db_index=True)
     data = models.JSONField(default=dict, blank=True)

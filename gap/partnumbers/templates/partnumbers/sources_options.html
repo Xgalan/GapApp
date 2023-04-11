@@ -1,0 +1,7 @@
+{% if sources %}
+    {% for supplier_type in sources %}
+    <option value="{{ supplier_type.shortform }}">{{ supplier_type.get_shortform_display }}</option>
+    {% endfor %}
+{% else %}
+    <option value="---">---</option>
+{% endif %}

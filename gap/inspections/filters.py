@@ -14,6 +14,10 @@ class LotFilter(django_filters.FilterSet):
     supplier_type = django_filters.ChoiceFilter(
         choices=SourceType.choices, widget=Select(attrs={"class": "form-control"})
     )
+    year = django_filters.NumberFilter(field_name="lot_date", lookup_expr="year__gte")
+    partnumber_pk = django_filters.UUIDFilter(
+        field_name="partnumbers", lookup_expr="exact", distinct=True
+    )
 
     class Meta:
         model = Lot

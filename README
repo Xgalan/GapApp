@@ -1,8 +1,12 @@
-Write a "secrets.json" file with the following structure:
 
-{
-	"SECRET_KEY": "your django project secret key,
-	"DATABASE": "your django project database name",
-}
+Create a .env file with the following environment variables:
 
-Define you HOST and PORT in the "gunicorn.conf.py" file.
+DJANGO_DEBUG= choose True or False
+SECRET_KEY= your-super-secret-key
+SQLITE_URL= sqlite:///path to your .sqlite3 database if using one
+TZ= your timezone, i.e.: Europe/Rome
+PORT= 8000
+LANGUAGE_CODE= see https://www.w3schools.com/tags/ref_country_codes.asp
+
+If using podman provide the correct build argument for USER_ID and GROUP_ID in the file "podman_build.sh".
+This variables will be used when building the image.

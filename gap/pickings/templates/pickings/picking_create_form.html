@@ -1,21 +1,64 @@
 {% extends "main_content.html" %}
 {% block title %}GAP - Inserisci nuovo movimento{% endblock %}
 {% block content %}
-<div class="card">
+<div class="card shadow-sm border">
     <h5 class="card-header">Inserisci nuovo movimento</h5>
     <div class="card-body">
         <form method="POST">{% csrf_token %}
             <div class="form-group {% if field.errors %}has-error{% endif %}">
                 {{ form.partnumber.label_tag }}
-                {{ form.partnumber }}
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    </div>
+                    {% if view.kwargs.pn_id %}
+                    {{ form.partnumber }}
+                    <input type="hidden" name="partnumber" value="{{ form.partnumber.value }}" required readonly>
+                    {% else %}
+                    <input type="text" name="sku-icontains" class="form-control"
+                        placeholder="Cerca codice..."
+                        hx-get="{% url 'partnumber-select-options' %}"
+                        hx-trigger="keyup changed delay:0.5s"
+                        hx-target="#id_partnumber"
+                        hx-push-url="false">
+                    <select class="custom-select" id="id_partnumber" name="partnumber">
+                        <option>Cerca un codice.</option>
+                    </select>
+                    {% endif %}
+                </div>
                 <small class="form-text text-muted">
                     {{ form.partnumber.errors|escape }}
                 </small>
             </div>
             <div class="form-row">
-                <div class="form-group {% if field.errors %}has-error{% endif %} col-md-6">
+                <div class="col-md-3 form-group">
+                    {{ form.supplier_type.label_tag }}
+                    {{ form.supplier_type }}
+                </div>
+                <div class="col-md-6 form-group {% if field.errors %}has-error{% endif %}">
                     {{ form.lot.label_tag }}
-                    {{ form.lot }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        </div>
+                        {% if view.kwargs.lot_id %}
+                            {{ form.lot }}
+                            <input type="hidden" name="lot" value="{{ form.lot.value }}" required readonly>
+                        {% else %}
+
+                        <input type="number" name="lot_number" class="form-control"
+                            placeholder="Cerca nr. lotto..."
+                            hx-get="{% url 'lot_list' %}"
+                            hx-headers='{"template": "lot_options"}'
+                            hx-include="[name='supplier_type'],[name='lot_number'],[name='year']"
+                            hx-trigger="change delay:0.3s,keyup changed delay:0.5s,change from:#id_year"
+                            hx-target="#id_lot"
+                            hx-push-url="false">
+                        <select class="custom-select" id="id_lot" name="lot">
+                            <option>Cerca un lotto.</option>
+                        </select>
+                        {% endif %}
+                    </div>
                     <small class="form-text text-muted">
                         {{ form.lot.errors|escape }}
                     </small>
@@ -26,7 +69,7 @@
                         {% endif %}
                     </span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     {{ form.year.label_tag }}
                     {{ form.year }}
                 </div>
@@ -47,111 +90,53 @@
                     </small>
                 </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>
-                Registra</button>
+            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-save"></i>  Registra</button>
         </form>
     </div>
 </div>
 {% endblock content %}
 {% block page_script %}
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(function() {
     const partnumberFormSearch = $("#id_partnumber");
-    const lotFormSearch = $("#id_lot");
-    const yearFormField = $("#id_year").addClass("form-control");
-    var urlLotSearch = "{% url 'lot_filtered' %}";
+    const lotFormSearch = $("[name='lot_number']");
+    const supplierType = $("#id_supplier_type");
+    const yearFormSearch = $("#id_year");
 
-    partnumberFormSearch.select2({
-        placeholder: "Cerca codice...",
-        minimumInputLength: 2,
-        theme: "bootstrap4",
-        ajax: {
-            url: "{% url 'partnumber-list' %}",
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                  search: params.term
-                }
-                return query;
-            },
-            processResults: function(data) {
-                return {
-                    results: $.map(data.results, function(obj) {
-                        return {
-                            id: obj.id,
-                            text: obj.sku
-                        };
-                    })
-                };
-            }
+    lotFormSearch.prop("disabled", true);
+    yearFormSearch.prop("disabled", true);
+    supplierType.prop("disabled", true);
+    $("#id_lot").prop("disabled", true);
+
+    htmx.on("searchSkuCompleted", (evt) => {
+        if (evt.type == "searchSkuCompleted") {
+        {% if not view.kwargs.lot_id %}
+            supplierType.prop("disabled", false);
+            // Update supplier_type select
+            htmx.ajax("GET",
+                "{% url 'partnumber-valid-supplier' %}", 
+                {
+                    target:"#id_supplier_type",
+                    swap:"innerHTML",
+                    values: {"partnumber-id": partnumberFormSearch.val()}
+                }).then(() => {
+                    lotFormSearch.prop("disabled", false);
+                    yearFormSearch.prop("disabled", false);
+                    $("#id_lot").prop("disabled", false);
+                });
+        {% endif %}
         }
-    }).on("change", function(e) {
-        lotFormSearch.prop("disabled", false);
     });
 
-    lotFormSearch.select2({
-        placeholder: "Cerca lotto...",
-        minimumInputLength: 1,
-        theme: "bootstrap4",
-        ajax: {
-            url: function() {
-                return urlLotSearch + partnumberFormSearch.val()
-            },
-            dataType: 'json',
-            data: function (params) {
-                const year = new Date().getFullYear();
-                // search by lot number
-                var query = {
-                  lot_number__contains: params.term,
-                  lot_date__year__gte: yearFormField.val(),
-                  page: params.page || 1,
-                  page_size: 50
-                }
-                return query;
-            },
-            processResults: function(data) {
-                data.results.sort(function(a, b) {
-                    const supplier_typeA = a.supplier_type.toUpperCase(); // ignore upper and lowercase
-                    const supplier_typeB = b.supplier_type.toUpperCase(); // ignore upper and lowercase
-                    if (supplier_typeA < supplier_typeB) {
-                        return -1;
-                    }
-                    if (supplier_typeA > supplier_typeB) {
-                        return 1;
-                    }
-
-                    // supplier_types must be equal
-                    return 0;
-                });
-                var groupedResults = {};
-                data.results.forEach(function(obj) {
-                    if (groupedResults.hasOwnProperty(obj.supplier_type_display)) {
-                        groupedResults[obj.supplier_type_display].push(obj);
-                    } else {
-                        groupedResults[obj.supplier_type_display] = [
-                            obj
-                        ];
-                    }
-                });
-                return {
-                    results: $.map(Object.entries(groupedResults), function(el) {
-                        return {
-                            text: el[0], children: el[1]
-                        };
-                    }),
-                    pagination: {
-                        more: data.next != null
-                    }
-                };
-            }
-        }
-    }).prop(
-        "disabled", true
-    );
-
     if ("{{ view.kwargs.pn_id }}") {
+        partnumberFormSearch.prop("disabled", true);
         lotFormSearch.prop("disabled", false);
+        yearFormSearch.prop("disabled", false);
+    }
+    if ("{{ view.kwargs.lot_id }}") {
+        supplierType.prop("disabled", true);
+        yearFormSearch.prop("disabled", true);
+        $("#id_lot").prop("disabled", true);
     }
 });
 </script>

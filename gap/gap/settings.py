@@ -28,6 +28,15 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 LOGIN_REDIRECT_URL = "/"
 
+if DEBUG:
+    import socket  # only if you haven't already imported this
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+        "127.0.0.1",
+        "10.0.2.2",
+    ]
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -36,6 +45,7 @@ INSTALLED_APPS = [
     "pickings.apps.PickingsConfig",
     "inspections.apps.InspectionsConfig",
     "warehouse.apps.WarehouseConfig",
+    "restapi.apps.RestapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,10 +59,12 @@ INSTALLED_APPS = [
     "treebeard",
     "corsheaders",
     "django_htmx",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

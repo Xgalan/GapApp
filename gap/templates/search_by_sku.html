@@ -3,7 +3,7 @@
         <span class="input-group-text"><i class="bi bi-search"></i></span>
     </div>
     <input type="text" name="search-by-sku" placeholder="Cerca codice..." class="form-control"
-        hx-post="{% url 'partnumber-search-by-sku' %}" 
+        hx-get="{% url 'partnumber-select-options' %}" 
         hx-trigger="keyup changed delay:0.5s"
         hx-target="#partnumbers-results"
         hx-push-url="false">

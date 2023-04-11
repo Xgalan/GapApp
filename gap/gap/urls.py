@@ -20,8 +20,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
 
-from partnumbers.views import PartnumberViewSet
-from warehouse.views import StorageViewSet
+from restapi.views import PartnumberViewSet, StorageViewSet
 
 
 router = routers.DefaultRouter()
@@ -36,6 +35,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("pickings/", include("pickings.urls")),
     path("partnumbers/", include("partnumbers.urls")),
+    path("restapi/", include("restapi.urls")),
     path("inspections/", include("inspections.urls")),
     path("accounts/login/", auth_views.LoginView.as_view(), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
@@ -44,12 +44,13 @@ urlpatterns = [
         get_schema_view(
             title="GappApp",
             description="OpenAPI schema for GapApp",
-            version="0.1.0",
+            version="0.2.0",
             patterns=schema_url_patterns,
         ),
         name="openapi-schema",
     ),
     path("", include("core.urls")),
+    path("__debug__/", include("debug_toolbar.urls")),
 ] + schema_url_patterns
 
 

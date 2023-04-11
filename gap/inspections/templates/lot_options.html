@@ -1,0 +1,7 @@
+{% if object_list %}
+{% for lot in object_list %}
+<option value="{{ lot.id }}">{{ lot }}</option>
+{% endfor %}
+{% else %}
+<option>Nessun risultato.</option>
+{% endif %}

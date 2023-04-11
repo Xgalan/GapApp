@@ -7,7 +7,6 @@ from django.contrib import messages
 from django_filters.views import FilterView
 
 from pickings.models import Picking
-from pickings.serializers import PickingSerializer
 from pickings.forms import PickingForm
 from pickings.filters import PickingFilter
 
@@ -15,7 +14,7 @@ from pickings.filters import PickingFilter
 class PickingFilterView(LoginRequiredMixin, FilterView):
     filterset_class = PickingFilter
     ordering = "-picking_date"
-    queryset = Picking.objects.select_related("partnumber")
+    queryset = Picking.objects.select_related("partnumber", "lot", "picking_operator")
     paginate_by = 25
 
     def get_template_names(self):

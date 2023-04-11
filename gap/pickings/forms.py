@@ -7,8 +7,16 @@ from pickings.models import Picking
 
 
 class PickingForm(forms.ModelForm):
+    supplier_type = forms.CharField(
+        required=False,
+        label=_("Tipo di fornitura"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
     year = forms.IntegerField(
-        required=False, label="Anno di ricerca", initial=datetime.now().year
+        required=False,
+        label="Anno di ricerca",
+        initial=datetime.now().year,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
     class Meta:
@@ -16,6 +24,7 @@ class PickingForm(forms.ModelForm):
         fields = (
             "partnumber",
             "lot",
+            "supplier_type",
             "year",
             "picking_date",
             "picking_operator",
@@ -30,7 +39,6 @@ class PickingForm(forms.ModelForm):
         widgets = {
             "partnumber": forms.Select(attrs={"class": "form-control"}),
             "lot": forms.Select(attrs={"class": "form-control"}),
-            "year": forms.NumberInput(attrs={"class": "form-control"}),
             "picking_date": forms.DateInput(
                 format="%Y-%m-%d", attrs={"type": "date", "class": "form-control"}
             ),

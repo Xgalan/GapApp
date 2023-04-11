@@ -4,24 +4,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework import permissions
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from rest_framework.decorators import action
 from rest_framework.response import Response
-from django_filters import rest_framework as filters
 from django_htmx.http import trigger_client_event
 from django_filters.views import FilterView
 
-from core.views import StandardResultsSetPagination
 from inspections.models import Lot
 from inspections.forms import LotForm
-from inspections.serializers import LotSerializer, SingleLotSerializer
+from restapi.serializers import SingleLotSerializer
 from inspections.filters import LotFilter
-from partnumbers.models import Partnumber
 
 
 class LotFilterView(LoginRequiredMixin, FilterView):
+    """Used for endpoint "inspections/", django url name="lot_list" """
+
     filterset_class = LotFilter
     ordering = "-lot_date"
     queryset = Lot.objects.prefetch_related("partnumbers")
@@ -29,71 +27,15 @@ class LotFilterView(LoginRequiredMixin, FilterView):
 
     def get_template_names(self):
         if self.request.htmx:
-            template_name = "lot_filter_partial.html"
+            if "Template" in self.request.headers:
+                if self.request.headers["Template"] == "lot_options":
+                    template_name = "lot_options.html"
+            else:
+                template_name = "lot_filter_partial.html"
         else:
             template_name = "lot_filter.html"
 
         return template_name
-
-
-class LotFilterDRF(filters.FilterSet):
-    lot_date_range = filters.DateFromToRangeFilter(field_name="lot_date")
-
-    class Meta:
-        model = Lot
-        fields = {
-            "lot_number": ["exact", "contains"],
-            "lot_date": ["year__gte"],
-            "supplier_type": ["exact"],
-        }
-
-
-class FilteredListView(ListCreateAPIView):
-    """
-    API endpoint that retrieves lots filtered by valid sources.
-    """
-
-    serializer_class = LotSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    pagination_class = StandardResultsSetPagination
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
-    template_name = "inspections/list.html"
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = LotFilterDRF
-
-    def get_queryset(self):
-        if "pn_id" in self.kwargs:
-            pk = self.kwargs.get("pn_id")
-            p = Partnumber.objects.get(id=pk)
-            sources = set([s.shortform for s in p.category.sources.all()])
-            q = Lot.objects.filter(supplier_type__in=sources)
-            return q
-        else:
-            return Lot.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if request.htmx:
-            serializer = self.get_serializer(queryset, many=True)
-            response = Response(
-                {"inspections": serializer.data},
-                template_name="lot_search_results.html",
-            )
-            return trigger_client_event(
-                response,
-                "lotSearchCompleted",
-                None,
-                after="swap",
-            )
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class LotReadUpdateView(RetrieveUpdateAPIView):
@@ -101,7 +43,9 @@ class LotReadUpdateView(RetrieveUpdateAPIView):
     API endpoint that implements Read and Update as in CRUD acronym.
     """
 
-    queryset = Lot.objects.prefetch_related("partnumbers").all()
+    queryset = Lot.objects.prefetch_related(
+        "picking_set__partnumber", "picking_set__picking_operator"
+    )
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     serializer_class = SingleLotSerializer
