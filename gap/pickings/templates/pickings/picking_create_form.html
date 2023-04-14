@@ -102,41 +102,46 @@ $(function() {
     const lotFormSearch = $("[name='lot_number']");
     const supplierType = $("#id_supplier_type");
     const yearFormSearch = $("#id_year");
+    const idLot = $("#id_lot");
+
+    function updateSupplierTypeForm() {
+        supplierType.prop("disabled", false);
+        // Update supplier_type select
+        htmx.ajax("GET",
+            "{% url 'partnumber-valid-supplier' %}", 
+            {
+                target:"#id_supplier_type",
+                swap:"innerHTML",
+                values: {"partnumber-id": partnumberFormSearch.val()}
+            }).then(() => {
+                lotFormSearch.prop("disabled", false);
+                yearFormSearch.prop("disabled", false);
+                idLot.prop("disabled", false);
+            });
+    }
 
     lotFormSearch.prop("disabled", true);
     yearFormSearch.prop("disabled", true);
     supplierType.prop("disabled", true);
-    $("#id_lot").prop("disabled", true);
+    idLot.prop("disabled", true);
 
+    {% if not view.kwargs.lot_id %}
     htmx.on("searchSkuCompleted", (evt) => {
         if (evt.type == "searchSkuCompleted") {
-        {% if not view.kwargs.lot_id %}
-            supplierType.prop("disabled", false);
-            // Update supplier_type select
-            htmx.ajax("GET",
-                "{% url 'partnumber-valid-supplier' %}", 
-                {
-                    target:"#id_supplier_type",
-                    swap:"innerHTML",
-                    values: {"partnumber-id": partnumberFormSearch.val()}
-                }).then(() => {
-                    lotFormSearch.prop("disabled", false);
-                    yearFormSearch.prop("disabled", false);
-                    $("#id_lot").prop("disabled", false);
-                });
-        {% endif %}
+            updateSupplierTypeForm();
         }
     });
+    {% endif %}
 
     if ("{{ view.kwargs.pn_id }}") {
         partnumberFormSearch.prop("disabled", true);
-        lotFormSearch.prop("disabled", false);
-        yearFormSearch.prop("disabled", false);
+        updateSupplierTypeForm();
     }
+
     if ("{{ view.kwargs.lot_id }}") {
         supplierType.prop("disabled", true);
         yearFormSearch.prop("disabled", true);
-        $("#id_lot").prop("disabled", true);
+        idLot.prop("disabled", true);
     }
 });
 </script>
