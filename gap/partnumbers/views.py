@@ -3,10 +3,28 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
+from django_filters.views import FilterView
 from django_htmx.http import trigger_client_event
 
 from partnumbers.models import Partnumber, Category
 from partnumbers.forms import PartnumberForm
+from partnumbers.filters import PartnumberFilter
+
+
+class PartnumberPrintList(LoginRequiredMixin, FilterView):
+    filterset_class = PartnumberFilter
+    ordering = "sku"
+    queryset = Partnumber.objects.select_related("category")
+
+    def get_template_names(self):
+        if self.request.htmx:
+            if "Template" in self.request.headers:
+                if self.request.headers["Template"] == "call_storage":
+                    template_name = "print_storage.html"
+        else:
+            template_name = "print_list.html"
+
+        return template_name
 
 
 class CreateView(LoginRequiredMixin, generic.edit.CreateView):

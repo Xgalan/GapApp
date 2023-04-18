@@ -90,38 +90,6 @@ class PartnumberViewSet(ModelViewSet):
             {"warning": "only HTMX requests are permitted on this endpoint"}
         )
 
-    @action(detail=False, methods=["get"], renderer_classes=[TemplateHTMLRenderer])
-    def print_storage(self, request):
-        q = Partnumber.objects.select_related("category").exclude(
-            category__category_name="Prodotto Finito"
-        )
-        results = [
-            {
-                "pk": p.id,
-                "sku": p.sku,
-                "category": p.category,
-                "picking_area": p.picking_area(),
-                "storage_area": p.storage_area(),
-            }
-            for p in q
-        ]
-        return Response(
-            {"partnumbers_list": results}, template_name="print_storage.html"
-        )
-
-    @action(detail=False, methods=["get"], renderer_classes=[TemplateHTMLRenderer])
-    def print_list(self, request):
-        q = (
-            Partnumber.objects.select_related("category")
-            .exclude(
-                Q(category__category_name="Prodotto Finito")
-                | Q(category__category_name="Materiale di consumo")
-                | Q(category__category_name="Bimetallo in nastro")
-            )
-            .order_by("sku")
-        )
-        return Response({"partnumbers_list": q}, template_name="print_list.html")
-
     @action(detail=True, methods=["get"], renderer_classes=[TemplateHTMLRenderer])
     def print_detail(self, request, pk=None):
         instance = self.get_object()

@@ -51,11 +51,11 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ user.first_name }}<span class="caret"></span></a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'lot_create' %}">Aggiungi Lotto...</a>
+                        <a class="dropdown-item" href="{% url 'partnumber_print_list' %}">Lista Codici</a>
                         {% if user.is_staff %}
                         <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
                         <a class="dropdown-item" href="{% url 'partnumber_create' %}">Aggiungi Codice...</a>
-                        <a class="dropdown-item" href="{% url 'lot_create' %}">Aggiungi Lotto...</a>
-                        <a class="dropdown-item" href="{% url 'partnumber-print-list' %}">Lista Codici</a>                        
                         <div class="dropdown-divider"></div>
                         {% endif %}
                         <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>

@@ -1,46 +1,72 @@
-{% extends "index.html" %}
+{% extends "main_content.html" %}
 {% block title %}GAP - Lista Codici{% endblock %}
-{% block main %}
+{% block content %}
 <div class="row">
 <div class="col">
-<h3>Lista codici per contapezzi</h3>
-{% if partnumbers_list %}
+
+<form class="shadow-sm border rounded p-3 mb-3">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            {{ filter.form.sku.label_tag }}
+            {{ filter.form.sku }}
+        </div>
+        <div class="form-group col-md-6">
+            {{ filter.form.category.label_tag }}
+            {% for c in filter.form.category %}
+                <div class="form-check">
+                {{ c }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-secondary">Cerca</button>
+</form>
+<h4>Lista Codici</h4>
+{% if object_list %}
 <div class="input-group mb-3 mt-3 w-50 d-print-none">
     <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">Cerca:</span>
     </div>
     <input type="search" id="partnumber-search" name="partnumber-search" class="form-control" placeholder="Codice ..." aria-label="Partnumber" aria-describedby="basic-addon1">
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-bordered table-sm">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Codice</th>
-                <th>Descrizione</th>
-                <th>Unità stock</th>
-                <th>P.M.U. (g)</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for p in partnumbers_list %}
-            <tr data-partnumber="{{ p.sku }}">
-                <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
-                <td>{{ p.sku }}</td>
-                <td>{{ p.description }}</td>
-                <td>{{ p.get_unit_display }}</td>
-                <td>{% if p.pmu %}{{ p.pmu }}{% endif %}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+
+<button type="button" class="btn btn-secondary mb-3"
+    hx-get="{% url 'partnumber_print_list' %}"
+    hx-target="#div-partnumber-list"
+    hx-swap="innerHTML"
+    hx-headers='{"template": "call_storage"}'>Visualizza posizione in magazzino</button>
+    <div id="div-partnumber-list">
+    <div class="table-responsive" >
+        <table class="table table-striped table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Codice</th>
+                    <th>Descrizione</th>
+                    <th>Unità stock</th>
+                    <th>P.M.U. (g)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in object_list %}
+                <tr data-partnumber="{{ p.sku }}">
+                    <td>{% if p.db_nr >= 0%}{{ p.db_nr }}{% endif %}</td>
+                    <td>{{ p.sku }}</td>
+                    <td>{{ p.description }}</td>
+                    <td>{{ p.get_unit_display }}</td>
+                    <td>{% if p.pmu %}{{ p.pmu }}{% endif %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p>
+        Nr. totale codici: {{ object_list.count }}
+    </p>
+    </div>
 {% else %}
 <p class="lead text-center">Nessun codice presente.</p>
 {% endif %}
-    <p>
-        Nr. totale codici: {{ partnumbers_list.count }}
-    </p>
 </div>
 </div>
 {% endblock %}
