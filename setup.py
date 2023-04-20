@@ -22,6 +22,7 @@ setuptools.setup(
         "gunicorn",
         "django-cors-headers",
         "django-htmx>=1.14,<2",
+        "django-debug-toolbar",
     ],
     include_package_data=True,
     python_requires=">=3.8",

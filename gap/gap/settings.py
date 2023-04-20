@@ -13,19 +13,19 @@ from pathlib import Path
 
 import environ
 
-from gap.third_party_settings import *
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
+env = environ.Env(
+    ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"])
+)
 env.read_env(str(BASE_DIR / ".env"))
 
 
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DJANGO_DEBUG", False)
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 LOGIN_REDIRECT_URL = "/"
 
 if DEBUG:
@@ -101,7 +101,6 @@ WSGI_APPLICATION = "gap.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {"default": env.db("SQLITE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
@@ -127,17 +126,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = env("LANGUAGE_CODE")
-
 TIME_ZONE = env("TZ")
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -160,3 +153,16 @@ STATIC_ROOT = BASE_DIR.resolve() / "static"
 ASSETS_DIR = BASE_DIR.resolve() / "assets"
 
 STATICFILES_DIRS = (ASSETS_DIR,)
+
+# THIRD PARTY SETTINGS
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",)
+}
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://\w+\.home\.arpa$",
+]
