@@ -1,0 +1,30 @@
+FROM python:3.9.16-slim-bullseye as build
+
+# These two environment variables prevent __pycache__/ files.
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+WORKDIR /usr/src/app
+RUN python -m venv /usr/src/app/venv
+ENV PATH="/usr/src/app/venv/bin:$PATH"
+COPY setup.py .
+RUN apt-get update && apt-get install -y build-essential mariadb-client libmariadb-dev \
+    && pip install wheel && pip install --no-cache-dir .
+
+FROM python:3.9.16-slim-bullseye
+
+RUN apt-get update && apt-get install -y mariadb-client \
+    && rm -rf /var/cache/apt/archives \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /usr/src/app /srv/databases /srv/fixtures 
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/venv ./venv
+COPY . .
+
+ENV PATH="/usr/src/app/venv/bin:$PATH"
+ENV PYTHONPATH="/usr/src/app/gap:$PYTHONPATH"
+
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]

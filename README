@@ -3,12 +3,14 @@ Create a .env file with the following environment variables:
 
 DJANGO_DEBUG= choose True or False
 SECRET_KEY= your-super-secret-key
+
+If using containers declare a path reachable by the container
 SQLITE_URL= sqlite:///path to your .sqlite3 database if using one
+
 TZ= your timezone, i.e.: Europe/Rome
 PORT= 8000
 LANGUAGE_CODE= see https://www.w3schools.com/tags/ref_country_codes.asp
 ALLOWED_HOSTS= i.e. localhost
 CORS_ALLOWED_ORIGINS= i.e. http://localhost, http://127.0.0.1
 
-If using podman provide the correct build argument for USER_ID and GROUP_ID in the file "podman_build.sh".
-This variables will be used when building the image.
+- Dockerfile_rootless is to be used specifically by podman.
