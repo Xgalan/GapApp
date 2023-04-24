@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y mariadb-client \
     && rm -rf /var/cache/apt/archives \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /usr/src/app /srv/databases /srv/fixtures 
+RUN mkdir -p /usr/src/app /srv/databases /srv/fixtures /srv/static
 
 WORKDIR /usr/src/app
 

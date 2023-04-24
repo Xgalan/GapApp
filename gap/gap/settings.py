@@ -18,7 +18,9 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"])
+    ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
+    STATIC_ROOT=(Path, BASE_DIR.resolve() / "static"),
+    ASSETS_DIR=(Path, BASE_DIR.resolve() / "assets")
 )
 env.read_env(str(BASE_DIR / ".env"))
 
@@ -149,9 +151,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR.resolve() / "static"
-ASSETS_DIR = BASE_DIR.resolve() / "assets"
-
+STATIC_ROOT = env("STATIC_ROOT")
+ASSETS_DIR = env("ASSETS_DIR")
 STATICFILES_DIRS = (ASSETS_DIR,)
 
 # THIRD PARTY SETTINGS
