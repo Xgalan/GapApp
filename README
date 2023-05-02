@@ -14,3 +14,7 @@ ALLOWED_HOSTS= i.e. localhost
 CORS_ALLOWED_ORIGINS= i.e. http://localhost, http://127.0.0.1
 
 - Dockerfile_rootless is to be used specifically by podman.
+- One more thing, if using podman write an .env.podman containing:
+
+DATABASE_DIR=path-to-your-sqlite-database-if-using-one
+CT_PORT=container port number to expose

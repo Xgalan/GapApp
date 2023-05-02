@@ -46,6 +46,7 @@ migrations
 fixtures
 static
 .env
+.env.podman
 users.json
 
 # Databases
